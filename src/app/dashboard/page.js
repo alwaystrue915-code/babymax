@@ -24,7 +24,7 @@ import {
   Star,
   MessageSquare,
   Copy,
-  Check
+  Check,
 } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Skeleton from "@/components/ui/Skeleton";
@@ -54,7 +54,7 @@ export default function DashboardPage() {
     appName: "Wingo Tool",
     noticeText: "Welcome to Wingo Tool! Enjoy the best accuracy.",
     showNotice: true,
-    appLogoUrl: "https://cdn.nexapk.in/image6.webp",
+    appLogoUrl: "https://cdn.nexapk.in/image35.webp",
     appVersion: "v1.0.2",
     appSize: "12.5 MB",
     appDownloadLink: "#",
@@ -99,14 +99,17 @@ export default function DashboardPage() {
           setPaymentStatus(data.user.paymentStatus);
           setRejectionReason(data.user.rejectionReason);
           setActivationKey(data.user.activationKey || "");
-          
-          if (data.user.paymentStatus === "approved" && data.user.activationKey) {
+
+          if (
+            data.user.paymentStatus === "approved" &&
+            data.user.activationKey
+          ) {
             const storageKey = `approval_seen_${data.user.activationKey}`;
             if (!localStorage.getItem(storageKey)) {
               setShowApprovalModal(true);
             }
           }
-          
+
           if (data.user.paymentStatus === "rejected") {
             if (!localStorage.getItem(`seen_rejection_${email}`)) {
               setShowRejectionModal(true);
@@ -125,7 +128,7 @@ export default function DashboardPage() {
       window.location.href = "/login";
       return;
     }
-    
+
     try {
       const user = JSON.parse(storedUser);
       if (user && user.email) {
@@ -133,7 +136,7 @@ export default function DashboardPage() {
         setUserEmail(user.email || "");
         setIsAuthenticated(true);
         fetchUserStatus(user.email);
-        
+
         // Start polling for status updates every 15 seconds
         intervalId = setInterval(() => fetchUserStatus(user.email), 15000);
       }
@@ -423,7 +426,13 @@ export default function DashboardPage() {
                     boxShadow: "0 8px 16px rgba(245, 158, 11, 0.2)",
                   }}
                 >
-                  <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                  <div
+                    style={{
+                      position: "relative",
+                      width: "100%",
+                      height: "100%",
+                    }}
+                  >
                     <Image
                       src={settings.appLogoUrl}
                       alt="Logo"
@@ -662,7 +671,11 @@ export default function DashboardPage() {
                 <motion.div
                   initial={{ scale: 1, opacity: 0.5 }}
                   animate={{ scale: 1.5, opacity: 0 }}
-                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeOut" }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 1.5,
+                    ease: "easeOut",
+                  }}
                   style={{
                     position: "absolute",
                     width: "100%",
@@ -685,13 +698,22 @@ export default function DashboardPage() {
                   fontWeight: "900",
                   marginBottom: "8px",
                   color: "#1e293b",
-                  letterSpacing: "-0.5px"
+                  letterSpacing: "-0.5px",
                 }}
               >
                 Payment Successful
               </h2>
-              <p style={{ color: "#64748b", marginBottom: "28px", fontSize: "1rem", lineHeight: "1.5" }}>
-                Your premium plan is now active.<br />Get ready to boost your results!
+              <p
+                style={{
+                  color: "#64748b",
+                  marginBottom: "28px",
+                  fontSize: "1rem",
+                  lineHeight: "1.5",
+                }}
+              >
+                Your premium plan is now active.
+                <br />
+                Get ready to boost your results!
               </p>
               <div
                 onClick={() => {
@@ -705,14 +727,23 @@ export default function DashboardPage() {
                   background: "#f8fafc",
                   padding: "15px",
                   borderRadius: "16px",
-                  border: copiedKey ? "2px solid #10b981" : "2px dashed #cbd5e1",
+                  border: copiedKey
+                    ? "2px solid #10b981"
+                    : "2px dashed #cbd5e1",
                   marginBottom: "25px",
                   cursor: "pointer",
                   transition: "all 0.3s ease",
-                  position: "relative"
+                  position: "relative",
                 }}
               >
-                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: "6px",
+                  }}
+                >
                   <span
                     style={{
                       fontSize: "0.75rem",
@@ -722,7 +753,11 @@ export default function DashboardPage() {
                   >
                     {copiedKey ? "COPIED TO CLIPBOARD!" : "TAP TO COPY KEY"}
                   </span>
-                  {copiedKey ? <Check size={12} color="#10b981" /> : <Copy size={12} color="#94a3b8" />}
+                  {copiedKey ? (
+                    <Check size={12} color="#10b981" />
+                  ) : (
+                    <Copy size={12} color="#94a3b8" />
+                  )}
                 </div>
                 <div
                   style={{
@@ -730,7 +765,7 @@ export default function DashboardPage() {
                     fontWeight: "800",
                     color: copiedKey ? "#10b981" : "#6366f1",
                     marginTop: "5px",
-                    letterSpacing: "1px"
+                    letterSpacing: "1px",
                   }}
                 >
                   {activationKey}
