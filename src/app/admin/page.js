@@ -919,29 +919,30 @@ export default function AdminPage() {
 
         /* Modal Styles */
         .modal-overlay {
-          position: fixed;
+          position: absolute;
           top: 0;
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(15, 23, 42, 0.6);
-          backdrop-filter: blur(8px);
-          -webkit-backdrop-filter: blur(8px);
+          background: rgba(15, 23, 42, 0.7);
+          backdrop-filter: blur(4px);
+          -webkit-backdrop-filter: blur(4px);
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 2000;
+          z-index: 3000;
           padding: 20px;
-          transition: all 0.3s ease;
         }
 
         .modal-content {
           background: white;
           border-radius: 24px;
-          width: 100%;
-          max-width: 400px;
+          width: 90%;
+          max-width: 340px;
           padding: 24px;
-          box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+          position: relative;
+          z-index: 3001;
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .modal-header {

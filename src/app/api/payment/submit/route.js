@@ -37,6 +37,20 @@ export async function POST(req) {
 
     // Return the user object, ensuring the new fields are included in the response
     const userObj = user.toObject();
+
+    // Trigger Admin Notification (Background)
+    const OTP_API_URL = process.env.OTP_API_URL || 'https://app.nexapk.in/mail/api.php';
+    const OTP_API_KEY = process.env.OTP_API_KEY;
+    
+    if (OTP_API_KEY) {
+      const notifyUrl = `${OTP_API_URL}?action=send_admin_notification&email=${encodeURIComponent(email)}&utr=${encodeURIComponent(utr)}&api_key=${encodeURIComponent(OTP_API_KEY)}`;
+      fetch(notifyUrl, {
+        method: 'GET',
+        headers: {
+          'X-API-Key': OTP_API_KEY,
+        },
+      }).catch(err => console.error('Admin notification error:', err));
+    }
     
     return Response.json({ 
       success: true, 
