@@ -15,8 +15,8 @@ export async function POST(req) {
     }
 
     // Hardcoded Admin Credentials
-    const ADMIN_EMAIL = 'freettol@mail.com';
-    const ADMIN_PASS = 'enzoxmod';
+    const ADMIN_EMAIL = 'wingoxtool@mail.com';
+    const ADMIN_PASS = 'wingoxtoolxmod';
 
     if (email.toLowerCase() === ADMIN_EMAIL && password === ADMIN_PASS) {
       const adminData = {
