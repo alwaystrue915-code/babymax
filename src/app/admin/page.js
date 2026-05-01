@@ -246,7 +246,6 @@ export default function AdminPage() {
 
   return (
     <>
-      {console.log('AdminPage Render - Tab:', activeTab, 'ApproveModal:', showApproveModal, 'RejectModal:', showRejectModal)}
       <div className="admin-container">
         <div className="admin-mobile-wrapper">
         
@@ -618,10 +617,11 @@ export default function AdminPage() {
           </button>
         </div>
       </div>
+      </div>
 
       {/* Rejection Modal */}
       {showRejectModal && (
-        <div className="modal-overlay animate-fade-in" style={{ display: 'flex !important' }} onClick={() => setShowRejectModal(false)}>
+        <div className="modal-overlay animate-fade-in" onClick={() => setShowRejectModal(false)}>
           <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Select Rejection Reason</h3>
@@ -658,7 +658,7 @@ export default function AdminPage() {
 
       {/* Approval Modal */}
       {showApproveModal && (
-        <div className="modal-overlay animate-fade-in" style={{ display: 'flex !important' }} onClick={() => setShowApproveModal(false)}>
+        <div className="modal-overlay animate-fade-in" onClick={() => setShowApproveModal(false)}>
           <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
             <div className="modal-header">
               <h3>Approve Request</h3>
@@ -704,7 +704,7 @@ export default function AdminPage() {
         </div>
       )}
 
-      <style jsx>{`
+      <style jsx global>{`
         .admin-container {
           min-height: 100vh;
           background-color: #e2e8f0;
@@ -1243,7 +1243,6 @@ export default function AdminPage() {
           }
         }
       `}</style>
-      </div>
     </>
   );
 }
