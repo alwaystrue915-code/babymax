@@ -634,30 +634,52 @@ export default function DashboardPage() {
               </button>
               <div
                 style={{
-                  width: "80px",
-                  height: "80px",
-                  background: "#d1fae5",
+                  width: "100px",
+                  height: "100px",
+                  background: "rgba(16, 185, 129, 0.1)",
                   borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  margin: "0 auto 20px",
+                  margin: "0 auto 24px",
                   color: "#10b981",
+                  position: "relative",
                 }}
               >
-                <Rocket size={40} />
+                {/* Ripple Animation */}
+                <motion.div
+                  initial={{ scale: 1, opacity: 0.5 }}
+                  animate={{ scale: 1.5, opacity: 0 }}
+                  transition={{ repeat: Infinity, duration: 1.5, ease: "easeOut" }}
+                  style={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    background: "#10b981",
+                  }}
+                />
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", damping: 12, stiffness: 200 }}
+                >
+                  <ShieldCheck size={56} />
+                </motion.div>
               </div>
               <h2
                 style={{
-                  fontSize: "1.5rem",
-                  fontWeight: "800",
-                  marginBottom: "10px",
+                  fontSize: "1.75rem",
+                  fontWeight: "900",
+                  marginBottom: "8px",
+                  color: "#1e293b",
+                  letterSpacing: "-0.5px"
                 }}
               >
-                Account Approved!
+                Payment Successful
               </h2>
-              <p style={{ color: "#64748b", marginBottom: "25px" }}>
-                Your premium account is now active. Enjoy full access to all features!
+              <p style={{ color: "#64748b", marginBottom: "28px", fontSize: "1rem", lineHeight: "1.5" }}>
+                Your premium plan is now active.<br />Get ready to boost your results!
               </p>
               <div
                 style={{
