@@ -54,7 +54,7 @@ export default function DashboardPage() {
     appName: "Wingo Tool",
     noticeText: "Welcome to Wingo Tool! Enjoy the best accuracy.",
     showNotice: true,
-    appLogoUrl: "https://cdn.nexapk.in/image35.webp",
+    appLogoUrl: "https://cdn.nexapk.in/image36.webp",
     appVersion: "v1.0.2",
     appSize: "12.5 MB",
     appDownloadLink: "#",
