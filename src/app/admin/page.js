@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { useRouter } from 'next/navigation';
 import { SettingsIcon, UsersIcon, ShieldIcon, InstagramIcon, SendIcon } from '@/components/Icons'; 
 import { toast } from 'sonner';
@@ -34,6 +35,7 @@ export default function AdminPage() {
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [approveUserId, setApproveUserId] = useState(null);
   const [activationKeyInput, setActivationKeyInput] = useState('');
+  const [mounted, setMounted] = useState(false);
 
   const rejectionReasons = [
     "Fake Payment Screenshot",
@@ -42,6 +44,8 @@ export default function AdminPage() {
     "Amount Mismatch (₹499 Required)",
     "Transaction Expired / Old UTR"
   ];
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     // Check if user is admin
@@ -619,89 +623,195 @@ export default function AdminPage() {
       </div>
       </div>
 
-      {/* Rejection Modal */}
-      {showRejectModal && (
-        <div className="modal-overlay animate-fade-in" onClick={() => setShowRejectModal(false)}>
-          <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Select Rejection Reason</h3>
-              <button className="close-modal" onClick={() => setShowRejectModal(false)}>×</button>
+      {/* Rejection Modal - rendered via portal at document.body */}
+      {mounted && showRejectModal && createPortal(
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(15, 23, 42, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999999,
+            padding: '20px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              borderRadius: '24px',
+              width: '90%',
+              maxWidth: '380px',
+              padding: '24px',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
+              position: 'relative',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#1e293b' }}>Reject Request</h3>
+              <button
+                style={{ background: 'none', border: 'none', fontSize: '1.6rem', color: '#94a3b8', cursor: 'pointer', lineHeight: 1 }}
+                onClick={() => setShowRejectModal(false)}
+              >×</button>
             </div>
-            <div className="modal-body">
-              <p className="modal-subtitle">Choose why this payment is being rejected:</p>
-              <div className="reason-list">
-                {rejectionReasons.map((reason, idx) => (
-                  <button 
-                    key={idx} 
-                    className="reason-item"
-                    disabled={processingId === rejectUserId}
-                    onClick={async () => {
-                      setShowRejectModal(false);
-                      await handleRequestAction(rejectUserId, 'rejected', reason);
-                    }}
-                  >
-                    {processingId === rejectUserId ? 'Processing...' : reason}
-                  </button>
-                ))}
-              </div>
+            <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '16px', marginTop: 0 }}>Choose why this payment is being rejected:</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {rejectionReasons.map((reason, idx) => (
+                <button
+                  key={idx}
+                  disabled={processingId === rejectUserId}
+                  style={{
+                    textAlign: 'left',
+                    padding: '14px 16px',
+                    background: '#f8fafc',
+                    border: '1.5px solid #e2e8f0',
+                    borderRadius: '12px',
+                    color: '#334155',
+                    fontWeight: 600,
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    opacity: processingId === rejectUserId ? 0.6 : 1,
+                  }}
+                  onClick={async () => {
+                    setShowRejectModal(false);
+                    await handleRequestAction(rejectUserId, 'rejected', reason);
+                  }}
+                >
+                  {processingId === rejectUserId ? 'Processing...' : reason}
+                </button>
+              ))}
             </div>
-            <button 
-              className="btn btn-secondary btn-block" 
-              style={{ marginTop: '20px', background: '#f1f5f9', color: '#475569', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold' }}
+            <button
+              style={{
+                marginTop: '16px',
+                width: '100%',
+                background: '#f1f5f9',
+                color: '#475569',
+                border: 'none',
+                padding: '12px',
+                borderRadius: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                fontSize: '0.95rem',
+              }}
               onClick={() => setShowRejectModal(false)}
             >
               Cancel
             </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {/* Approval Modal */}
-      {showApproveModal && (
-        <div className="modal-overlay animate-fade-in" onClick={() => setShowApproveModal(false)}>
-          <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
-            <div className="modal-header">
-              <h3>Approve Request</h3>
-              <button className="close-modal" onClick={() => setShowApproveModal(false)}>×</button>
+      {/* Approval Modal - rendered via portal at document.body */}
+      {mounted && showApproveModal && createPortal(
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: '100vw',
+            height: '100vh',
+            background: 'rgba(15, 23, 42, 0.8)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999999,
+            padding: '20px',
+            boxSizing: 'border-box',
+          }}
+        >
+          <div
+            style={{
+              background: '#ffffff',
+              borderRadius: '24px',
+              width: '90%',
+              maxWidth: '380px',
+              padding: '24px',
+              boxShadow: '0 25px 60px rgba(0,0,0,0.4)',
+              position: 'relative',
+            }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+              <h3 style={{ margin: 0, fontSize: '1.2rem', fontWeight: 800, color: '#1e293b' }}>✅ Approve Request</h3>
+              <button
+                style={{ background: 'none', border: 'none', fontSize: '1.6rem', color: '#94a3b8', cursor: 'pointer', lineHeight: 1 }}
+                onClick={() => { setShowApproveModal(false); setActivationKeyInput(''); }}
+              >×</button>
             </div>
-            <div className="modal-body">
-              <p className="modal-subtitle">Enter the Activation Key to approve this user:</p>
-              <div className="input-group">
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  placeholder="Enter Activation Key"
-                  value={activationKeyInput}
-                  onChange={(e) => setActivationKeyInput(e.target.value)}
-                  autoFocus
-                />
-              </div>
-              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
-                <button 
-                  className="btn btn-secondary" 
-                  style={{ flex: 1, background: '#f1f5f9', color: '#475569', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold' }}
-                  onClick={() => setShowApproveModal(false)}
-                >
-                  Cancel
-                </button>
-                <button 
-                  className="btn btn-primary" 
-                  style={{ flex: 1, background: '#10b981', color: 'white', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold', opacity: processingId === approveUserId ? 0.7 : 1 }}
-                  disabled={processingId === approveUserId}
-                  onClick={() => {
-                    if (!activationKeyInput) {
-                      toast.error('Please enter an activation key');
-                      return;
-                    }
-                    handleRequestAction(approveUserId, 'approved', '', activationKeyInput);
-                  }}
-                >
-                  {processingId === approveUserId ? 'Approving...' : 'Approve'}
-                </button>
-              </div>
+            <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '16px', marginTop: 0 }}>Enter the Activation Key to approve this user:</p>
+            <input
+              type="text"
+              placeholder="Enter Activation Key"
+              value={activationKeyInput}
+              onChange={(e) => setActivationKeyInput(e.target.value)}
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '12px',
+                border: '1.5px solid #e2e8f0',
+                background: '#f8fafc',
+                fontSize: '0.95rem',
+                outline: 'none',
+                boxSizing: 'border-box',
+              }}
+            />
+            <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+              <button
+                style={{
+                  flex: 1,
+                  background: '#f1f5f9',
+                  color: '#475569',
+                  border: 'none',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                }}
+                onClick={() => { setShowApproveModal(false); setActivationKeyInput(''); }}
+              >
+                Cancel
+              </button>
+              <button
+                disabled={processingId === approveUserId}
+                style={{
+                  flex: 1,
+                  background: '#10b981',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px',
+                  borderRadius: '12px',
+                  fontWeight: 'bold',
+                  cursor: processingId === approveUserId ? 'not-allowed' : 'pointer',
+                  opacity: processingId === approveUserId ? 0.7 : 1,
+                  fontSize: '0.95rem',
+                }}
+                onClick={() => {
+                  if (!activationKeyInput.trim()) {
+                    toast.error('Please enter an activation key');
+                    return;
+                  }
+                  handleRequestAction(approveUserId, 'approved', '', activationKeyInput);
+                }}
+              >
+                {processingId === approveUserId ? 'Approving...' : 'Approve ✓'}
+              </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style jsx global>{`
