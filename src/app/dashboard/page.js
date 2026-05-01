@@ -23,6 +23,8 @@ import {
   Zap,
   Star,
   MessageSquare,
+  Copy,
+  Check
 } from "lucide-react";
 import Card from "@/components/ui/Card";
 import Skeleton from "@/components/ui/Skeleton";
@@ -45,6 +47,7 @@ export default function DashboardPage() {
   const [userName, setUserName] = useState("User");
   const [userEmail, setUserEmail] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [copiedKey, setCopiedKey] = useState(false);
   const [settings, setSettings] = useState({
     instagramLink: "",
     telegramLink: "",
@@ -691,29 +694,43 @@ export default function DashboardPage() {
                 Your premium plan is now active.<br />Get ready to boost your results!
               </p>
               <div
+                onClick={() => {
+                  if (activationKey) {
+                    navigator.clipboard.writeText(activationKey);
+                    setCopiedKey(true);
+                    setTimeout(() => setCopiedKey(false), 2000);
+                  }
+                }}
                 style={{
                   background: "#f8fafc",
                   padding: "15px",
                   borderRadius: "16px",
-                  border: "2px dashed #cbd5e1",
+                  border: copiedKey ? "2px solid #10b981" : "2px dashed #cbd5e1",
                   marginBottom: "25px",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  position: "relative"
                 }}
               >
-                <span
-                  style={{
-                    fontSize: "0.75rem",
-                    color: "#94a3b8",
-                    fontWeight: "700",
-                  }}
-                >
-                  YOUR ACTIVATION KEY
-                </span>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", gap: "6px" }}>
+                  <span
+                    style={{
+                      fontSize: "0.75rem",
+                      color: copiedKey ? "#10b981" : "#94a3b8",
+                      fontWeight: "700",
+                    }}
+                  >
+                    {copiedKey ? "COPIED TO CLIPBOARD!" : "TAP TO COPY KEY"}
+                  </span>
+                  {copiedKey ? <Check size={12} color="#10b981" /> : <Copy size={12} color="#94a3b8" />}
+                </div>
                 <div
                   style={{
                     fontSize: "1.25rem",
                     fontWeight: "800",
-                    color: "#6366f1",
+                    color: copiedKey ? "#10b981" : "#6366f1",
                     marginTop: "5px",
+                    letterSpacing: "1px"
                   }}
                 >
                   {activationKey}
