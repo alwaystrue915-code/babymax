@@ -15,9 +15,11 @@ export async function POST(req) {
     const { utr } = await req.json();
     const email = userPayload.email;
 
-    if (!utr || !utr.trim()) {
-      return Response.json({ success: false, message: 'UTR is required' }, { status: 400 });
+    if (!utr || !utr.trim() || utr.trim().length < 12) {
+      return Response.json({ success: false, message: 'Valid 12-digit UTR is required' }, { status: 400 });
     }
+
+    const cleanUtr = utr.trim();
 
     // Find user first to run checks before update
     const existingUser = await User.findOne({ email: email.toLowerCase() });
@@ -33,7 +35,7 @@ export async function POST(req) {
       );
     }
 
-    // Block if already pending (wait for admin to process)
+    // Block if already pending (wait for admin to process) - Rate Limit "Bar Bar Submit"
     if (existingUser.paymentStatus === 'pending') {
       return Response.json(
         { success: false, message: 'Your request is already pending. Please wait for admin review.' },
@@ -58,7 +60,7 @@ export async function POST(req) {
       { email: email.toLowerCase() },
       {
         $set: {
-          utr: utr.trim(),
+          utr: cleanUtr,
           paymentStatus: 'pending',
           rejectionReason: '',
           hasSeenStatusUpdate: false,
@@ -69,13 +71,17 @@ export async function POST(req) {
     );
 
     // Trigger Admin Email Notification (fire & forget)
+    // Using fallback API key from db_config.php if env is missing
     const OTP_API_URL = process.env.OTP_API_URL || 'https://app.nexapk.in/mail/api.php';
-    const OTP_API_KEY = process.env.OTP_API_KEY;
+    const OTP_API_KEY = process.env.OTP_API_KEY || 'silent_store_by_enzosrs';
 
-    const notifyUrl = `${OTP_API_URL}?action=send_admin_notification&email=${encodeURIComponent(email)}&utr=${encodeURIComponent(utr.trim())}&api_key=${encodeURIComponent(OTP_API_KEY || '')}`;
+    const notifyUrl = `${OTP_API_URL}?action=send_admin_notification&email=${encodeURIComponent(email)}&utr=${encodeURIComponent(cleanUtr)}&api_key=${encodeURIComponent(OTP_API_KEY)}`;
+    
     fetch(notifyUrl, {
       method: 'GET',
-      headers: OTP_API_KEY ? { 'X-API-Key': OTP_API_KEY } : {},
+      headers: {
+        'X-API-Key': OTP_API_KEY
+      },
     }).catch(err => console.error('Admin notification error:', err));
 
     const userObj = user.toObject();
