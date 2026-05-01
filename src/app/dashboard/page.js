@@ -96,16 +96,18 @@ export default function DashboardPage() {
           setPaymentStatus(data.user.paymentStatus);
           setRejectionReason(data.user.rejectionReason);
           setActivationKey(data.user.activationKey || "");
-          if (
-            data.user.paymentStatus === "approved" &&
-            data.user.activationKey
-          ) {
+          
+          if (data.user.paymentStatus === "approved" && data.user.activationKey) {
             const storageKey = `approval_seen_${data.user.activationKey}`;
-            if (!localStorage.getItem(storageKey)) setShowApprovalModal(true);
+            if (!localStorage.getItem(storageKey)) {
+              setShowApprovalModal(true);
+            }
           }
+          
           if (data.user.paymentStatus === "rejected") {
-            if (!localStorage.getItem(`seen_rejection_${email}`))
+            if (!localStorage.getItem(`seen_rejection_${email}`)) {
               setShowRejectionModal(true);
+            }
           }
         }
       } catch (err) {
@@ -114,10 +116,13 @@ export default function DashboardPage() {
     };
 
     const storedUser = localStorage.getItem("user");
+    let intervalId = null;
+
     if (!storedUser) {
       window.location.href = "/login";
       return;
     }
+    
     try {
       const user = JSON.parse(storedUser);
       if (user && user.email) {
@@ -125,6 +130,9 @@ export default function DashboardPage() {
         setUserEmail(user.email || "");
         setIsAuthenticated(true);
         fetchUserStatus(user.email);
+        
+        // Start polling for status updates every 15 seconds
+        intervalId = setInterval(() => fetchUserStatus(user.email), 15000);
       }
     } catch (e) {
       window.location.href = "/login";
@@ -151,6 +159,7 @@ export default function DashboardPage() {
     const timer = setTimeout(() => setLoading(false), 800);
     return () => {
       clearTimeout(timer);
+      if (intervalId) clearInterval(intervalId);
       window.removeEventListener("resize", handleResize);
     };
   }, []);
