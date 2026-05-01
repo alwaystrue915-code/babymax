@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { EmailIcon, LockIcon, AlertCircle } from '@/components/Icons';
 import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
+import Sidebar from '@/components/Sidebar';
 import dynamic from 'next/dynamic';
 
 import { memo } from 'react';
 
-// Lazy load heavy components to improve LCP
+// Memoize heavy components to prevent re-renders during input
 const GradientBackground = memo(dynamic(() => import('@/components/GradientBackground'), {
   ssr: false,
 }));
@@ -102,49 +103,50 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page">
-      {/* Animated Gradient Background */}
-      <GradientBackground />
-      
-      {/* Plasma Effect */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, opacity: 0.4 }}>
-        <Plasma 
-          color="#ff6b9d"
-          speed={0.6}
-          direction="forward"
-          scale={1.2}
-          opacity={0.7}
-          mouseInteractive={true}
-        />
-      </div>
-      
-      <div className="auth-card effect-float">
+    <div className="dashboard-layout" style={{ background: '#f8faff' }}>
+      {/* Sidebar for premium look */}
+      <Sidebar 
+        isOpen={false} 
+        onToggle={() => {}} 
+        settings={{ appName: "Sailent Predictor", appLogoUrl: "https://cdn.nexapk.in/image34.webp" }}
+        collapsed={true}
+      />
+
+      <div className="dashboard-content" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Animated Backgrounds */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+          <GradientBackground />
+        </div>
+        
+        {/* Plasma Effect */}
+        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, opacity: 0.3 }}>
+          <Plasma 
+            color="#6366f1"
+            speed={0.4}
+            direction="forward"
+            scale={1.5}
+            opacity={0.6}
+            mouseInteractive={false} // Disable for performance
+          />
+        </div>
+        
+        <div 
+          className="auth-page-content" 
+          style={{ 
+            position: 'relative', 
+            zIndex: 10, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            minHeight: '100vh',
+            padding: '20px'
+          }}
+        >
+          <div className="auth-card effect-float">
 
         <div className="auth-header">
-          <SplitText
-            text="Welcome Back"
-            tag="h1"
-            className="auth-title"
-            delay={80}
-            duration={0.8}
-            ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40, rotateX: -90 }}
-            to={{ opacity: 1, y: 0, rotateX: 0 }}
-            textAlign="center"
-          />
-          <SplitText
-            text="Sign in to your account to continue"
-            tag="p"
-            className="auth-subtitle"
-            delay={40}
-            duration={0.5}
-            ease="power2.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 15 }}
-            to={{ opacity: 1, y: 0 }}
-            textAlign="center"
-          />
+          <h1 className="auth-title">Welcome Back</h1>
+          <p className="auth-subtitle">Sign in to your account to continue</p>
         </div>
 
         <form onSubmit={handleSubmit}>

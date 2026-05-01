@@ -234,8 +234,9 @@ ul {
   }
 }
 
-.effect-float:hover {
-  animation: float3d 2s ease-in-out infinite;
+.effect-float {
+  /* Animation removed for stability and performance */
+  transition: transform 0.2s ease;
 }
 
 .effect-rainbow-text:hover {
@@ -600,7 +601,6 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.5);
   position: relative;
   z-index: 10;
-  animation: scaleIn 0.5s ease-out;
   overflow: visible;
   /* Performance optimization */
   will-change: transform;
@@ -618,7 +618,7 @@ img {
   border-radius: 50%;
   filter: blur(30px);
   z-index: -1;
-  animation: float 6s ease-in-out infinite;
+  animation: none;
 }
 
 .auth-card::after {
@@ -632,7 +632,7 @@ img {
   border-radius: 50%;
   filter: blur(25px);
   z-index: -1;
-  animation: float 8s ease-in-out infinite reverse;
+  animation: none;
 }
 
 @keyframes float {

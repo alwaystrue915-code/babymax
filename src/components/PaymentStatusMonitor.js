@@ -32,9 +32,14 @@ export default function PaymentStatusMonitor() {
         if (!user.email) return;
         setUserEmail(user.email);
 
+        const token = localStorage.getItem('token');
         const res = await fetch(`/api/users/me`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json', 'x-api-key': 'sailent_secure_v1_key' },
+          headers: { 
+            'Content-Type': 'application/json', 
+            'x-api-key': 'sailent_secure_v1_key',
+            'Authorization': `Bearer ${token}`
+          },
           body: JSON.stringify({ email: user.email })
         });
         const data = await res.json();
@@ -84,11 +89,13 @@ export default function PaymentStatusMonitor() {
 
   const acknowledge = async () => {
     try {
+      const token = localStorage.getItem('token');
       await fetch('/api/users/me', {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
-          'x-api-key': 'sailent_secure_v1_key'
+          'x-api-key': 'sailent_secure_v1_key',
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ email: userEmail })
       });
