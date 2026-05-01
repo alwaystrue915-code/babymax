@@ -220,16 +220,40 @@ export default function HistoryPage() {
                   <div
                     onClick={handleCopy}
                     style={{
-                      marginTop: "2px", background: 'rgba(255,255,255,0.8)', border: `1.5px dashed ${getStatusColor(userStatus.paymentStatus)}60`,
-                      borderRadius: '10px', padding: '8px 10px', textAlign: 'center', cursor: 'pointer',
-                      transition: 'all 0.2s ease', transform: copied ? 'scale(0.98)' : 'scale(1)'
+                      marginTop: "2px", 
+                      background: 'white', 
+                      border: `1px solid ${getStatusColor(userStatus.paymentStatus)}40`,
+                      borderRadius: '12px', 
+                      padding: '12px 14px', 
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '12px',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)', 
+                      transform: copied ? 'scale(0.96)' : 'scale(1)',
+                      boxShadow: '0 2px 6px rgba(0,0,0,0.02)'
                     }}>
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px', color: getStatusColor(userStatus.paymentStatus), fontSize: '0.65rem', fontWeight: '800', textTransform: 'uppercase', marginBottom: '2px' }}>
-                      {copied ? <Check size={12} /> : <Copy size={12} />}
-                      {copied ? 'Key Copied!' : 'Tap to Copy Key'}
-                    </div>
-                    <div style={{ color: '#1e293b', fontSize: '1rem', fontWeight: '900', letterSpacing: '2px', fontFamily: 'monospace' }}>
+                    <div style={{ 
+                      color: '#1e293b', 
+                      fontSize: '1.15rem', 
+                      fontWeight: '900', 
+                      letterSpacing: '1px', 
+                      fontFamily: 'monospace' 
+                    }}>
                       {userStatus.activationKey || 'N/A'}
+                    </div>
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      background: copied ? '#10b98115' : 'rgba(0,0,0,0.03)',
+                      padding: '6px',
+                      borderRadius: '8px',
+                      color: copied ? '#10b981' : '#64748b',
+                      transition: 'all 0.2s ease'
+                    }}>
+                      {copied ? <Check size={16} /> : <Copy size={16} />}
                     </div>
                   </div>
                 )}
