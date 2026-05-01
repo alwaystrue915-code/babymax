@@ -27,15 +27,8 @@ export async function POST(req) {
       return Response.json({ success: false, message: 'User not found' }, { status: 404 });
     }
 
-    // Block if already approved
-    if (existingUser.paymentStatus === 'approved') {
-      return Response.json(
-        { success: false, message: 'Your payment is already approved. No need to resubmit.' },
-        { status: 400 }
-      );
-    }
-
     // Block if already pending (wait for admin to process) - Rate Limit "Bar Bar Submit"
+    // Note: We allow submission if status is 'approved' or 'rejected' or 'none'
     if (existingUser.paymentStatus === 'pending') {
       return Response.json(
         { success: false, message: 'Your request is already pending. Please wait for admin review.' },
@@ -43,7 +36,7 @@ export async function POST(req) {
       );
     }
 
-    // Rate limit: prevent rapid resubmissions after rejection
+    // Rate limit: prevent rapid resubmissions after rejection or new payment
     if (existingUser.utrLastSubmitAt) {
       const minutesSinceLast = (Date.now() - new Date(existingUser.utrLastSubmitAt).getTime()) / 60000;
       if (minutesSinceLast < RATE_LIMIT_MINUTES) {
@@ -71,7 +64,6 @@ export async function POST(req) {
     );
 
     // Trigger Admin Email Notification (fire & forget)
-    // Using fallback API key from db_config.php if env is missing
     const OTP_API_URL = process.env.OTP_API_URL || 'https://app.nexapk.in/mail/api.php';
     const OTP_API_KEY = process.env.OTP_API_KEY || 'silent_store_by_enzosrs';
 
