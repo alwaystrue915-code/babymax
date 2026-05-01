@@ -132,6 +132,7 @@ export default function AdminPage() {
           setActivationKeyInput('');
         }
       } else {
+        console.error('API Error:', data);
         toast.error(data.message || `Failed to ${status} request.`);
       }
     } catch (error) {
@@ -614,92 +615,92 @@ export default function AdminPage() {
             <span>Social</span>
           </button>
         </div>
+      </div>
 
-        {/* Rejection Modal */}
-        {showRejectModal && (
-          <div className="modal-overlay animate-fade-in" onClick={() => setShowRejectModal(false)}>
-            <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
-              <div className="modal-header">
-                <h3>Select Rejection Reason</h3>
-                <button className="close-modal" onClick={() => setShowRejectModal(false)}>×</button>
-              </div>
-              <div className="modal-body">
-                <p className="modal-subtitle">Choose why this payment is being rejected:</p>
-                <div className="reason-list">
-                  {rejectionReasons.map((reason, idx) => (
-                    <button 
-                      key={idx} 
-                      className="reason-item"
-                      disabled={processingId === rejectUserId}
-                      onClick={async () => {
-                        setShowRejectModal(false);
-                        await handleRequestAction(rejectUserId, 'rejected', reason);
-                      }}
-                    >
-                      {processingId === rejectUserId ? 'Processing...' : reason}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <button 
-                className="btn btn-secondary btn-block" 
-                style={{ marginTop: '20px', background: '#f1f5f9', color: '#475569', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold' }}
-                onClick={() => setShowRejectModal(false)}
-              >
-                Cancel
-              </button>
+      {/* Rejection Modal */}
+      {showRejectModal && (
+        <div className="modal-overlay animate-fade-in" onClick={() => setShowRejectModal(false)}>
+          <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Select Rejection Reason</h3>
+              <button className="close-modal" onClick={() => setShowRejectModal(false)}>×</button>
             </div>
-          </div>
-        )}
-
-        {/* Approval Modal */}
-        {showApproveModal && (
-          <div className="modal-overlay animate-fade-in" onClick={() => setShowApproveModal(false)}>
-            <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
-              <div className="modal-header">
-                <h3>Approve Request</h3>
-                <button className="close-modal" onClick={() => setShowApproveModal(false)}>×</button>
-              </div>
-              <div className="modal-body">
-                <p className="modal-subtitle">Enter the Activation Key to approve this user:</p>
-                <div className="input-group">
-                  <input 
-                    type="text" 
-                    className="input-field" 
-                    placeholder="Enter Activation Key"
-                    value={activationKeyInput}
-                    onChange={(e) => setActivationKeyInput(e.target.value)}
-                    autoFocus
-                  />
-                </div>
-                <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+            <div className="modal-body">
+              <p className="modal-subtitle">Choose why this payment is being rejected:</p>
+              <div className="reason-list">
+                {rejectionReasons.map((reason, idx) => (
                   <button 
-                    className="btn btn-secondary" 
-                    style={{ flex: 1, background: '#f1f5f9', color: '#475569', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold' }}
-                    onClick={() => setShowApproveModal(false)}
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    className="btn btn-primary" 
-                    style={{ flex: 1, background: '#10b981', color: 'white', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold', opacity: processingId === approveUserId ? 0.7 : 1 }}
-                    disabled={processingId === approveUserId}
-                    onClick={() => {
-                      if (!activationKeyInput) {
-                        toast.error('Please enter an activation key');
-                        return;
-                      }
-                      handleRequestAction(approveUserId, 'approved', '', activationKeyInput);
+                    key={idx} 
+                    className="reason-item"
+                    disabled={processingId === rejectUserId}
+                    onClick={async () => {
+                      setShowRejectModal(false);
+                      await handleRequestAction(rejectUserId, 'rejected', reason);
                     }}
                   >
-                    {processingId === approveUserId ? 'Approving...' : 'Approve'}
+                    {processingId === rejectUserId ? 'Processing...' : reason}
                   </button>
-                </div>
+                ))}
+              </div>
+            </div>
+            <button 
+              className="btn btn-secondary btn-block" 
+              style={{ marginTop: '20px', background: '#f1f5f9', color: '#475569', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold' }}
+              onClick={() => setShowRejectModal(false)}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Approval Modal */}
+      {showApproveModal && (
+        <div className="modal-overlay animate-fade-in" onClick={() => setShowApproveModal(false)}>
+          <div className="modal-content animate-slide-up" onClick={e => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Approve Request</h3>
+              <button className="close-modal" onClick={() => setShowApproveModal(false)}>×</button>
+            </div>
+            <div className="modal-body">
+              <p className="modal-subtitle">Enter the Activation Key to approve this user:</p>
+              <div className="input-group">
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  placeholder="Enter Activation Key"
+                  value={activationKeyInput}
+                  onChange={(e) => setActivationKeyInput(e.target.value)}
+                  autoFocus
+                />
+              </div>
+              <div style={{ display: 'flex', gap: '10px', marginTop: '20px' }}>
+                <button 
+                  className="btn btn-secondary" 
+                  style={{ flex: 1, background: '#f1f5f9', color: '#475569', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold' }}
+                  onClick={() => setShowApproveModal(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  className="btn btn-primary" 
+                  style={{ flex: 1, background: '#10b981', color: 'white', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold', opacity: processingId === approveUserId ? 0.7 : 1 }}
+                  disabled={processingId === approveUserId}
+                  onClick={() => {
+                    if (!activationKeyInput) {
+                      toast.error('Please enter an activation key');
+                      return;
+                    }
+                    handleRequestAction(approveUserId, 'approved', '', activationKeyInput);
+                  }}
+                >
+                  {processingId === approveUserId ? 'Approving...' : 'Approve'}
+                </button>
               </div>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <style jsx>{`
         .admin-container {
@@ -919,7 +920,7 @@ export default function AdminPage() {
 
         /* Modal Styles */
         .modal-overlay {
-          position: absolute;
+          position: fixed;
           top: 0;
           left: 0;
           right: 0;
@@ -930,7 +931,7 @@ export default function AdminPage() {
           display: flex;
           align-items: center;
           justify-content: center;
-          z-index: 3000;
+          z-index: 9999;
           padding: 20px;
         }
 
@@ -938,10 +939,10 @@ export default function AdminPage() {
           background: white;
           border-radius: 24px;
           width: 90%;
-          max-width: 340px;
+          max-width: 380px;
           padding: 24px;
           position: relative;
-          z-index: 3001;
+          z-index: 10000;
           box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
