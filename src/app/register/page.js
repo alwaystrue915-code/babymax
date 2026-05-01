@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, memo } from 'react';
+import { useState, useCallback, useMemo, memo, useEffect } from 'react';
 import Link from 'next/link';
 import { UserIcon, EmailIcon, LockIcon, AlertCircle } from '@/components/Icons';
 import Input from '@/components/ui/Input';
