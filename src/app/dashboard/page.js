@@ -162,7 +162,7 @@ export default function DashboardPage() {
         <DashboardNavbar onMenuToggle={() => setSidebarOpen(!sidebarOpen)} settings={settings} />
         <main style={{ padding: "24px 16px", flex: 1, background: "#f8faff" }}>
           
-          {showNoticeBanner && (
+          {showNoticeBanner && !showApprovalModal && !showRejectionModal && (
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} style={{ marginBottom: "24px", background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", borderRadius: "20px", padding: "24px", color: "white", boxShadow: "0 8px 24px rgba(16, 185, 129, 0.25)", position: "relative" }}>
               <button onClick={() => setShowNoticeBanner(false)} style={{ position: "absolute", top: "16px", right: "16px", background: "rgba(255,255,255,0.2)", border: "none", borderRadius: "50%", width: "32px", height: "32px", color: "white", cursor: "pointer" }}><X size={18} /></button>
               <h3 style={{ fontSize: "1.25rem", fontWeight: "700", marginBottom: "8px", display: "flex", alignItems: "center", gap: "8px" }}><AlertCircle size={22} /> Important Notice</h3>
@@ -213,12 +213,23 @@ export default function DashboardPage() {
 
       </div>
 
+      {/* Success Snackbar - Only if no other modal is showing */}
+      {showSuccessSnackbar && !showApprovalModal && !showRejectionModal && (
+        <div style={{ position: "fixed", top: "24px", right: "24px", background: "linear-gradient(135deg, #10b981 0%, #059669 100%)", color: "white", padding: "16px 24px", borderRadius: "12px", boxShadow: "0 10px 40px rgba(16, 185, 129, 0.3)", display: "flex", alignItems: "center", gap: "12px", zIndex: 9999 }}>
+          <div style={{ fontWeight: "700" }}>Registration Successful! Welcome to {settings.appName} Pro</div>
+          <button onClick={() => setShowSuccessSnackbar(false)} style={{ background: "none", border: "none", color: "white", cursor: "pointer", fontSize: "20px" }}>×</button>
+        </div>
+      )}
+
       {/* Approval Modal */}
       <AnimatePresence>
         {showApprovalModal && (
-          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px" }}>
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px", backdropFilter: "blur(4px)" }}>
             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ background: "white", borderRadius: "32px", padding: "40px 30px", textAlign: "center", maxWidth: "400px", position: "relative" }}>
-              <button onClick={() => setShowApprovalModal(false)} style={{ position: "absolute", top: "20px", right: "20px", background: "none", border: "none", cursor: "pointer" }}><X size={24} /></button>
+              <button onClick={() => {
+                if (activationKey) localStorage.setItem(`approval_seen_${activationKey}`, "true");
+                setShowApprovalModal(false);
+              }} style={{ position: "absolute", top: "20px", right: "20px", background: "none", border: "none", cursor: "pointer" }}><X size={24} /></button>
               <div style={{ width: "80px", height: "80px", background: "#d1fae5", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", color: "#10b981" }}><Rocket size={40} /></div>
               <h2 style={{ fontSize: "1.5rem", fontWeight: "800", marginBottom: "10px" }}>Account Approved!</h2>
               <p style={{ color: "#64748b", marginBottom: "25px" }}>Congratulations! Your payment has been verified.</p>
@@ -227,6 +238,23 @@ export default function DashboardPage() {
                 <div style={{ fontSize: "1.25rem", fontWeight: "800", color: "#6366f1", marginTop: "5px" }}>{activationKey}</div>
               </div>
               <button onClick={() => window.open(settings.appDownloadLink, "_blank")} style={{ width: "100%", background: "#10b981", color: "white", border: "none", padding: "16px", borderRadius: "16px", fontWeight: "700", cursor: "pointer" }}>Download App</button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Rejection Modal */}
+      <AnimatePresence>
+        {showRejectionModal && !showApprovalModal && (
+          <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000, padding: "20px", backdropFilter: "blur(4px)" }}>
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} style={{ background: "white", borderRadius: "32px", padding: "40px 30px", textAlign: "center", maxWidth: "400px", position: "relative" }}>
+              <div style={{ width: "80px", height: "80px", background: "#fee2e2", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 20px", color: "#ef4444" }}><XCircle size={40} /></div>
+              <h2 style={{ fontSize: "1.5rem", fontWeight: "800", marginBottom: "10px" }}>Request Rejected</h2>
+              <p style={{ color: "#64748b", marginBottom: "20px" }}>{rejectionReason || "Your payment could not be verified."}</p>
+              <button onClick={() => {
+                localStorage.setItem(`seen_rejection_${userEmail}`, "true");
+                setShowRejectionModal(false);
+              }} style={{ width: "100%", background: "#ef4444", color: "white", border: "none", padding: "16px", borderRadius: "16px", fontWeight: "700", cursor: "pointer" }}>Okay, I'll check</button>
             </motion.div>
           </div>
         )}
