@@ -175,6 +175,7 @@ export default function DashboardPage() {
     }
 
     // Load user data from localStorage
+    const storedUser = localStorage.getItem("user");
     if (!storedUser) {
       window.location.href = "/login";
       return;
