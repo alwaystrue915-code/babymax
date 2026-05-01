@@ -630,12 +630,13 @@ export default function AdminPage() {
                     <button 
                       key={idx} 
                       className="reason-item"
-                      onClick={() => {
-                        handleRequestAction(rejectUserId, 'rejected', reason);
+                      disabled={processingId === rejectUserId}
+                      onClick={async () => {
                         setShowRejectModal(false);
+                        await handleRequestAction(rejectUserId, 'rejected', reason);
                       }}
                     >
-                      {reason}
+                      {processingId === rejectUserId ? 'Processing...' : reason}
                     </button>
                   ))}
                 </div>
@@ -681,7 +682,8 @@ export default function AdminPage() {
                   </button>
                   <button 
                     className="btn btn-primary" 
-                    style={{ flex: 1, background: '#10b981', color: 'white', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold' }}
+                    style={{ flex: 1, background: '#10b981', color: 'white', border: 'none', padding: '12px', borderRadius: '12px', fontWeight: 'bold', opacity: processingId === approveUserId ? 0.7 : 1 }}
+                    disabled={processingId === approveUserId}
                     onClick={() => {
                       if (!activationKeyInput) {
                         toast.error('Please enter an activation key');
@@ -690,7 +692,7 @@ export default function AdminPage() {
                       handleRequestAction(approveUserId, 'approved', '', activationKeyInput);
                     }}
                   >
-                    Approve
+                    {processingId === approveUserId ? 'Approving...' : 'Approve'}
                   </button>
                 </div>
               </div>
@@ -923,12 +925,14 @@ export default function AdminPage() {
           right: 0;
           bottom: 0;
           background: rgba(15, 23, 42, 0.6);
-          backdrop-filter: blur(4px);
+          backdrop-filter: blur(8px);
+          -webkit-backdrop-filter: blur(8px);
           display: flex;
           align-items: center;
-          justifyContent: center;
+          justify-content: center;
           z-index: 2000;
           padding: 20px;
+          transition: all 0.3s ease;
         }
 
         .modal-content {
@@ -991,6 +995,15 @@ export default function AdminPage() {
           background: #fee2e2;
           border-color: #fecaca;
           color: #991b1b;
+        }
+
+        @keyframes fade-in {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .animate-fade-in {
+          animation: fade-in 0.3s ease-out;
         }
 
         @keyframes slide-up {
