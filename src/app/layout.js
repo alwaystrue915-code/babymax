@@ -1,6 +1,5 @@
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeContext";
-import PaymentStatusMonitor from "@/components/PaymentStatusMonitor";
 import MobileOnlyGuard from "@/components/MobileOnlyGuard";
 import { Toaster } from "sonner";
 
@@ -74,7 +73,6 @@ export default function RootLayout({ children }) {
         <ThemeProvider>
           <Toaster position="top-center" richColors />
           <MobileOnlyGuard>
-            <PaymentStatusMonitor />
             {children}
           </MobileOnlyGuard>
         </ThemeProvider>

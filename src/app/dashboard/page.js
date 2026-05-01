@@ -657,7 +657,7 @@ export default function DashboardPage() {
                 Account Approved!
               </h2>
               <p style={{ color: "#64748b", marginBottom: "25px" }}>
-                Congratulations! Your payment has been verified.
+                Your premium account is now active. Enjoy full access to all features!
               </p>
               <div
                 style={{
