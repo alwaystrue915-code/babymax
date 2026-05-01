@@ -1,9 +1,0 @@
---- a/src/app/dashboard/page.js
-+++ b/src/app/dashboard/page.js
-@@ -175,5 +175,6 @@
-     }
- 
-     // Load user data from localStorage
-+    const storedUser = localStorage.getItem("user");
-     if (!storedUser) {
-       window.location.href = "/login";

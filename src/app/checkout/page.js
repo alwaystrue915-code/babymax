@@ -43,6 +43,7 @@ export default function CheckoutPage() {
   const [user, setUser] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState("none");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [showFullQR, setShowFullQR] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 1024);
@@ -576,6 +577,7 @@ export default function CheckoutPage() {
                       }}
                     >
                       <div
+                        onClick={() => setShowFullQR(true)}
                         style={{
                           background: "white",
                           padding: "10px",
@@ -584,6 +586,7 @@ export default function CheckoutPage() {
                           display: "inline-block",
                           marginBottom: "14px",
                           boxShadow: "0 8px 24px rgba(245,158,11,0.15)",
+                          cursor: "zoom-in"
                         }}
                       >
                         <img
@@ -598,14 +601,20 @@ export default function CheckoutPage() {
                         />
                       </div>
                       <p
+                        onClick={() => setShowFullQR(true)}
                         style={{
                           fontSize: "13px",
                           color: "#64748b",
-                          fontWeight: "500",
+                          fontWeight: "600",
                           marginBottom: "16px",
+                          cursor: "pointer",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px"
                         }}
                       >
-                        Scan with any UPI app to pay ₹{settings.upiAmount}
+                        <QrCode size={14} /> Tap to expand for screenshot
                       </p>
                       <div
                         style={{
@@ -1079,6 +1088,107 @@ export default function CheckoutPage() {
           </svg>
         </motion.a>
       )}
+      {/* Full Screen QR Modal */}
+      <AnimatePresence>
+        {showFullQR && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowFullQR(false)}
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              background: "rgba(0,0,0,0.9)",
+              zIndex: 9999,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "20px",
+              backdropFilter: "blur(8px)",
+            }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                background: "white",
+                padding: "24px",
+                borderRadius: "32px",
+                textAlign: "center",
+                width: "100%",
+                maxWidth: "340px",
+                boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "12px",
+                  fontWeight: "800",
+                  color: "#f59e0b",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.1em",
+                  marginBottom: "16px",
+                }}
+              >
+                Scan or Screenshot
+              </div>
+              
+              <div
+                style={{
+                  background: "white",
+                  padding: "10px",
+                  borderRadius: "20px",
+                  border: "2px solid #fef3c7",
+                  marginBottom: "20px",
+                }}
+              >
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(`upi://pay?pa=${settings.upiId}&am=${settings.upiAmount}&cu=INR`)}`}
+                  alt="Full Payment QR"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    borderRadius: "12px",
+                    display: "block",
+                  }}
+                />
+              </div>
+
+              <div style={{ marginBottom: "24px" }}>
+                <div style={{ fontSize: "20px", fontWeight: "900", color: "#0f172a" }}>₹{settings.upiAmount}.00</div>
+                <div style={{ fontSize: "13px", color: "#64748b", fontWeight: "600" }}>{settings.upiName}</div>
+              </div>
+
+              <button
+                onClick={() => setShowFullQR(false)}
+                style={{
+                  width: "100%",
+                  padding: "14px",
+                  borderRadius: "16px",
+                  background: "#0f172a",
+                  color: "white",
+                  fontWeight: "700",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                Close View
+              </button>
+            </motion.div>
+            
+            <p style={{ color: "white", marginTop: "24px", fontSize: "14px", fontWeight: "500", opacity: 0.8 }}>
+              Take a screenshot to pay via UPI app
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

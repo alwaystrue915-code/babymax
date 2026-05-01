@@ -7,20 +7,22 @@ import Input from '@/components/ui/Input';
 import Button from '@/components/ui/Button';
 import dynamic from 'next/dynamic';
 
-// Lazy load heavy components to improve LCP
-const GradientBackground = dynamic(() => import('@/components/GradientBackground'), {
-  ssr: false,
-});
+import { memo } from 'react';
 
-const Plasma = dynamic(() => import('@/components/Plasma'), {
+// Lazy load heavy components to improve LCP
+const GradientBackground = memo(dynamic(() => import('@/components/GradientBackground'), {
+  ssr: false,
+}));
+
+const Plasma = memo(dynamic(() => import('@/components/Plasma'), {
   ssr: false,
   loading: () => <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, background: 'linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%)' }} />,
-});
+}));
 
-const SplitText = dynamic(() => import('@/components/SplitText'), {
+const SplitText = memo(dynamic(() => import('@/components/SplitText'), {
   ssr: false,
   loading: () => null,
-});
+}));
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
