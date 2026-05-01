@@ -206,7 +206,7 @@ export default function FAQPage() {
           <div style={{ marginTop: '30px', textAlign: 'center', padding: '20px' }}>
             <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '12px' }}>Still have questions?</p>
             <a 
-              href="https://t.me/sailent_support" 
+              href={settings.telegramLink || "https://t.me/sailent_support"} 
               target="_blank" 
               rel="noopener noreferrer"
               style={{

@@ -7,6 +7,7 @@ import DashboardNavbar from "@/components/DashboardNavbar";
 import { motion } from "framer-motion";
 import { ShieldCheck, XCircle, Clock, Download, CheckCircle2, AlertCircle, Copy, Check, History } from "lucide-react";
 import Skeleton from "@/components/ui/Skeleton";
+import FloatingTelegram from "@/components/FloatingTelegram";
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -272,6 +273,8 @@ export default function HistoryPage() {
             </div>
           )}
         </main>
+        
+        <FloatingTelegram />
       </div>
     </div>
   );

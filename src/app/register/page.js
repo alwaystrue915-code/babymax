@@ -14,28 +14,11 @@ const GradientBackground = memo(dynamic(() => import('@/components/GradientBackg
   ssr: false,
 }));
 
-const Plasma = memo(dynamic(() => import('@/components/Plasma'), {
-  ssr: false,
-  loading: () => <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, background: 'linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%)' }} />,
-}));
-
 // Memoized Background Layer to prevent re-renders during form typing
-const BackgroundLayer = memo(({ color = "#ff8a65" }) => (
-  <>
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-      <GradientBackground />
-    </div>
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, opacity: 0.3, pointerEvents: 'none' }}>
-      <Plasma 
-        color={color}
-        speed={0.4}
-        direction="forward"
-        scale={1.5}
-        opacity={0.6}
-        mouseInteractive={false} 
-      />
-    </div>
-  </>
+const BackgroundLayer = memo(() => (
+  <div className="animate-fade-in" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+    <GradientBackground />
+  </div>
 ));
 
 BackgroundLayer.displayName = 'BackgroundLayer';
@@ -51,6 +34,12 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
+  const [settings, setSettings] = useState({ 
+    appName: "Sailent Predictor", 
+    appLogoUrl: "https://cdn.nexapk.in/image34.webp",
+    instagramLink: "",
+    telegramLink: ""
+  });
 
   // Performance Optimization: Stable password strength calculation
   const passwordStrength = useMemo(() => {
@@ -72,6 +61,23 @@ export default function RegisterPage() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     setErrors(prev => (prev[name] ? { ...prev, [name]: '' } : prev));
+  }, []);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("/api/settings", { 
+          headers: { 'x-api-key': 'sailent_secure_v1_key' }
+        });
+        const data = await res.json();
+        if (data.success && data.settings) {
+          setSettings(prev => ({ ...prev, ...data.settings }));
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      }
+    };
+    fetchSettings();
   }, []);
 
   const validateForm = useCallback(() => {
@@ -169,13 +175,13 @@ export default function RegisterPage() {
       <Sidebar 
         isOpen={false} 
         onToggle={() => {}} 
-        settings={{ appName: "Sailent Predictor", appLogoUrl: "https://cdn.nexapk.in/image34.webp" }}
+        settings={settings}
         collapsed={true}
       />
 
       <div className="dashboard-content" style={{ position: 'relative', overflow: 'hidden' }}>
         {/* Background is now a separate memoized layer */}
-        <BackgroundLayer color="#ff8a65" />
+        <BackgroundLayer />
 
         <div 
           className="auth-page-content" 
@@ -189,48 +195,54 @@ export default function RegisterPage() {
             padding: '20px'
           }}
         >
-          <div className="auth-card effect-float" style={{ maxWidth: '520px' }}>
-            <div className="auth-header">
+          <div className="auth-card effect-float animate-scale-in" style={{ maxWidth: '520px' }}>
+            <div className="auth-header animate-slide-up">
               <h1 className="auth-title">Create Account</h1>
               <p className="auth-subtitle">Join Sailent Predictor Pro today</p>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <Input
-                label="Full Name"
-                type="text"
-                placeholder="John Doe"
-                name="fullName"
-                value={formData.fullName}
-                onChange={handleChange}
-                icon={UserIcon}
-                error={errors.fullName}
-                required
-              />
+              <div className="animate-slide-up delay-100">
+                <Input
+                  label="Full Name"
+                  type="text"
+                  placeholder="John Doe"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  icon={UserIcon}
+                  error={errors.fullName}
+                  required
+                />
+              </div>
 
-              <Input
-                label="Email Address"
-                type="email"
-                placeholder="username@gmail.com"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                icon={EmailIcon}
-                error={errors.email}
-                required
-              />
+              <div className="animate-slide-up delay-200">
+                <Input
+                  label="Email Address"
+                  type="email"
+                  placeholder="username@gmail.com"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  icon={EmailIcon}
+                  error={errors.email}
+                  required
+                />
+              </div>
 
-              <Input
-                label="Password"
-                type="password"
-                placeholder="Create password"
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                icon={LockIcon}
-                error={errors.password}
-                required
-              />
+              <div className="animate-slide-up delay-300">
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="Create password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  icon={LockIcon}
+                  error={errors.password}
+                  required
+                />
+              </div>
 
               {formData.password && (
                 <div style={{ marginBottom: '20px' }}>
@@ -292,9 +304,11 @@ export default function RegisterPage() {
                 )}
               </div>
 
-              <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine">
-                Create Account
-              </Button>
+              <div className="animate-slide-up delay-400">
+                <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine">
+                  Create Account
+                </Button>
+              </div>
 
               {errors.submit && (
                 <div className="error-message" style={{ marginTop: '16px', justifyContent: 'center' }}>

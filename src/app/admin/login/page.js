@@ -9,11 +9,6 @@ import dynamic from 'next/dynamic';
 
 const GradientBackground = dynamic(() => import('@/components/GradientBackground'), { ssr: false });
 
-const Plasma = dynamic(() => import('@/components/Plasma'), {
-  ssr: false,
-  loading: () => <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, background: 'linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%)' }} />,
-});
-
 const SplitText = dynamic(() => import('@/components/SplitText'), {
   ssr: false,
   loading: () => null,
@@ -25,6 +20,23 @@ export default function AdminLoginPage() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const adminToken = localStorage.getItem('adminToken');
+    const adminUser = localStorage.getItem('adminUser');
+    
+    if (adminToken && adminUser) {
+      try {
+        const user = JSON.parse(adminUser);
+        if (user.role === 'admin') {
+          window.location.href = '/admin';
+        }
+      } catch (e) {
+        localStorage.removeItem('adminToken');
+        localStorage.removeItem('adminUser');
+      }
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,21 +76,11 @@ export default function AdminLoginPage() {
   return (
     <div className="auth-page">
       {/* Animated Gradient Background */}
-      <GradientBackground />
-      
-      {/* Plasma Effect */}
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, opacity: 0.4 }}>
-        <Plasma 
-          color="#6366f1"
-          speed={0.6}
-          direction="forward"
-          scale={1.2}
-          opacity={0.7}
-          mouseInteractive={true}
-        />
+      <div className="animate-fade-in" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+        <GradientBackground />
       </div>
       
-      <div className="auth-card effect-float">
+      <div className="auth-card effect-float animate-scale-in">
 
         <div className="auth-header">
           <div style={{ 
@@ -122,29 +124,35 @@ export default function AdminLoginPage() {
         </div>
 
         <form onSubmit={handleSubmit}>
-          <Input
-            label="Admin Email"
-            type="email"
-            placeholder="admin@example.com"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            icon={EmailIcon}
-            required
-          />
+          <div className="animate-slide-up delay-100">
+            <Input
+              label="Admin Email"
+              type="email"
+              placeholder="admin@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              icon={EmailIcon}
+              required
+            />
+          </div>
 
-          <Input
-            label="Secret Password"
-            type="password"
-            placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            icon={LockIcon}
-            required
-          />
+          <div className="animate-slide-up delay-200">
+            <Input
+              label="Secret Password"
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              icon={LockIcon}
+              required
+            />
+          </div>
 
-          <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine" style={{ marginTop: '12px' }}>
-            Login to Admin
-          </Button>
+          <div className="animate-slide-up delay-300">
+            <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine" style={{ marginTop: '12px' }}>
+              Login to Admin
+            </Button>
+          </div>
 
           {error && (
             <div className="error-message" style={{ marginTop: '16px', justifyContent: 'center' }}>

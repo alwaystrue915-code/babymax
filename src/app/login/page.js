@@ -13,28 +13,11 @@ const GradientBackground = memo(dynamic(() => import('@/components/GradientBackg
   ssr: false,
 }));
 
-const Plasma = memo(dynamic(() => import('@/components/Plasma'), {
-  ssr: false,
-  loading: () => <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, background: 'linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%)' }} />,
-}));
-
 // Memoized Background Layer to prevent re-renders during form typing
-const BackgroundLayer = memo(({ color = "#6366f1" }) => (
-  <>
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-      <GradientBackground />
-    </div>
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, opacity: 0.3, pointerEvents: 'none' }}>
-      <Plasma 
-        color={color}
-        speed={0.4}
-        direction="forward"
-        scale={1.5}
-        opacity={0.6}
-        mouseInteractive={false} 
-      />
-    </div>
-  </>
+const BackgroundLayer = memo(() => (
+  <div className="animate-fade-in" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+    <GradientBackground />
+  </div>
 ));
 
 BackgroundLayer.displayName = 'BackgroundLayer';
@@ -45,6 +28,12 @@ export default function LoginPage() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [settings, setSettings] = useState({ 
+    appName: "Sailent Predictor", 
+    appLogoUrl: "https://cdn.nexapk.in/image34.webp",
+    instagramLink: "",
+    telegramLink: ""
+  });
 
   useEffect(() => {
     const savedEmail = localStorage.getItem('rememberEmail');
@@ -56,6 +45,38 @@ export default function LoginPage() {
       setPassword(savedPassword);
       setRememberMe(true);
     }
+
+    const fetchSettings = async () => {
+      try {
+        const res = await fetch("/api/settings", { 
+          headers: { 'x-api-key': 'sailent_secure_v1_key' }
+        });
+        const data = await res.json();
+        if (data.success && data.settings) {
+          setSettings(prev => ({ ...prev, ...data.settings }));
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      }
+    };
+
+    // Auto-login if token exists
+    const token = localStorage.getItem('token');
+    const user = localStorage.getItem('user');
+    if (token && user) {
+      try {
+        const userData = JSON.parse(user);
+        if (userData.role !== 'admin') {
+          window.location.href = '/dashboard';
+          return;
+        }
+      } catch (e) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+      }
+    }
+
+    fetchSettings();
   }, []);
 
   const handleEmailChange = useCallback((e) => setEmail(e.target.value), []);
@@ -80,12 +101,14 @@ export default function LoginPage() {
       const data = await response.json();
 
       if (data.success) {
+        // Double check role to prevent admin bypass
         if (data.user && data.user.role === 'admin') {
           setError('Admins must use the dedicated Admin Login portal.');
           setLoading(false);
           return;
         }
         
+        // Securely store JWT and user data
         localStorage.setItem('user', JSON.stringify(data.user));
         localStorage.setItem('token', data.token);
         
@@ -116,13 +139,13 @@ export default function LoginPage() {
       <Sidebar 
         isOpen={false} 
         onToggle={() => {}} 
-        settings={{ appName: "Sailent Predictor", appLogoUrl: "https://cdn.nexapk.in/image34.webp" }}
+        settings={settings}
         collapsed={true}
       />
 
       <div className="dashboard-content" style={{ position: 'relative', overflow: 'hidden' }}>
         {/* Background is now a separate memoized layer */}
-        <BackgroundLayer color="#6366f1" />
+        <BackgroundLayer />
 
         <div 
           className="auth-page-content" 
@@ -136,32 +159,36 @@ export default function LoginPage() {
             padding: '20px'
           }}
         >
-          <div className="auth-card effect-float">
-            <div className="auth-header">
+          <div className="auth-card effect-float animate-scale-in">
+            <div className="auth-header animate-slide-up">
               <h1 className="auth-title">Welcome Back</h1>
               <p className="auth-subtitle">Sign in to your account to continue</p>
             </div>
 
             <form onSubmit={handleSubmit}>
-              <Input
-                label="Email Address"
-                type="email"
-                placeholder="name@example.com"
-                value={email}
-                onChange={handleEmailChange}
-                icon={EmailIcon}
-                required
-              />
+              <div className="animate-slide-up delay-100">
+                <Input
+                  label="Email Address"
+                  type="email"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={handleEmailChange}
+                  icon={EmailIcon}
+                  required
+                />
+              </div>
 
-              <Input
-                label="Password"
-                type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={handlePasswordChange}
-                icon={LockIcon}
-                required
-              />
+              <div className="animate-slide-up delay-200">
+                <Input
+                  label="Password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  icon={LockIcon}
+                  required
+                />
+              </div>
 
               <div style={{ 
                 display: 'flex', 
@@ -183,9 +210,11 @@ export default function LoginPage() {
                 </Link>
               </div>
 
-              <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine">
-                Sign In
-              </Button>
+              <div className="animate-slide-up delay-300">
+                <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine">
+                  Sign In
+                </Button>
+              </div>
 
               {error && (
                 <div className="error-message" style={{ marginTop: '16px', justifyContent: 'center' }}>

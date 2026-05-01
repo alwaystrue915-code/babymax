@@ -436,6 +436,13 @@ img {
   animation: scaleIn 0.4s ease-out forwards;
 }
 
+/* Staggered Animation Delays */
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+
 /* Loading Skeleton */
 .skeleton {
   background: linear-gradient(90deg,
