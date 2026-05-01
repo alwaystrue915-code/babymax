@@ -19,35 +19,26 @@ const Plasma = memo(dynamic(() => import('@/components/Plasma'), {
   loading: () => <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, background: 'linear-gradient(135deg, #f8faff 0%, #f1f5f9 100%)' }} />,
 }));
 
-// Memoized Background Component to prevent re-renders during form typing
-const AuthBackground = memo(({ color = "#ff8a65" }) => (
+// Memoized Background Layer to prevent re-renders during form typing
+const BackgroundLayer = memo(({ color = "#ff8a65" }) => (
   <>
-    {/* Sidebar for premium look - Collapsed and static for performance */}
-    <Sidebar 
-      isOpen={false} 
-      onToggle={() => {}} 
-      settings={{ appName: "Sailent Predictor", appLogoUrl: "https://cdn.nexapk.in/image34.webp" }}
-      collapsed={true}
-    />
-    <div className="dashboard-content" style={{ position: 'relative', overflow: 'hidden', contain: 'strict' }}>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
-        <GradientBackground />
-      </div>
-      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, opacity: 0.3, pointerEvents: 'none' }}>
-        <Plasma 
-          color={color}
-          speed={0.4}
-          direction="forward"
-          scale={1.5}
-          opacity={0.6}
-          mouseInteractive={false} 
-        />
-      </div>
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 0 }}>
+      <GradientBackground />
+    </div>
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, opacity: 0.3, pointerEvents: 'none' }}>
+      <Plasma 
+        color={color}
+        speed={0.4}
+        direction="forward"
+        scale={1.5}
+        opacity={0.6}
+        mouseInteractive={false} 
+      />
     </div>
   </>
 ));
 
-AuthBackground.displayName = 'AuthBackground';
+BackgroundLayer.displayName = 'BackgroundLayer';
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
@@ -175,141 +166,150 @@ export default function RegisterPage() {
 
   return (
     <div className="dashboard-layout" style={{ background: '#f8faff' }}>
-      <AuthBackground color="#ff8a65" />
-      
-      <div 
-        className="auth-page-content" 
-        style={{ 
-          position: 'relative', 
-          zIndex: 10, 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center', 
-          minHeight: '100vh',
-          padding: '20px',
-          willChange: 'transform' // GPU Acceleration
-        }}
-      >
-        <div className="auth-card effect-float" style={{ maxWidth: '520px' }}>
-          <div className="auth-header">
-            <h1 className="auth-title">Create Account</h1>
-            <p className="auth-subtitle">Join Sailent Predictor Pro today</p>
-          </div>
+      <Sidebar 
+        isOpen={false} 
+        onToggle={() => {}} 
+        settings={{ appName: "Sailent Predictor", appLogoUrl: "https://cdn.nexapk.in/image34.webp" }}
+        collapsed={true}
+      />
 
-          <form onSubmit={handleSubmit}>
-            <Input
-              label="Full Name"
-              type="text"
-              placeholder="John Doe"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleChange}
-              icon={UserIcon}
-              error={errors.fullName}
-              required
-            />
+      <div className="dashboard-content" style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Background is now a separate memoized layer */}
+        <BackgroundLayer color="#ff8a65" />
 
-            <Input
-              label="Email Address"
-              type="email"
-              placeholder="username@gmail.com"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              icon={EmailIcon}
-              error={errors.email}
-              required
-            />
-
-            <Input
-              label="Password"
-              type="password"
-              placeholder="Create password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              icon={LockIcon}
-              error={errors.password}
-              required
-            />
-
-            {formData.password && (
-              <div style={{ marginBottom: '20px' }}>
-                <div className="password-strength">
-                  <div 
-                    className="password-strength-bar"
-                    style={{ 
-                      width: `${(passwordStrength / 5) * 100}%`,
-                      background: strengthColors[passwordStrength]
-                    }}
-                  />
-                </div>
-                <div style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  marginTop: '6px',
-                  fontSize: '0.75rem',
-                  color: 'var(--text-tertiary)'
-                }}>
-                  <span>Password strength</span>
-                  <span style={{ color: strengthColors[passwordStrength], fontWeight: '600' }}>
-                    {strengthLabels[passwordStrength]}
-                  </span>
-                </div>
-              </div>
-            )}
-
-            <Input
-              label="Confirm Password"
-              type="password"
-              placeholder="Confirm password"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              icon={LockIcon}
-              error={errors.confirmPassword}
-              required
-            />
-
-            <div style={{ marginBottom: '24px' }}>
-              <label className="checkbox-wrapper">
-                <input 
-                  type="checkbox" 
-                  checked={acceptTerms}
-                  onChange={(e) => {
-                    setAcceptTerms(e.target.checked);
-                    if (errors.terms) setErrors(prev => ({ ...prev, terms: '' }));
-                  }}
-                />
-                <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                  I accept the <Link href="/terms" style={{ color: 'var(--accent)', fontWeight: '600' }}>Terms</Link> and <Link href="/privacy" style={{ color: 'var(--accent)', fontWeight: '600' }}>Privacy Policy</Link>
-                </span>
-              </label>
-              {errors.terms && (
-                <div className="error-message" style={{ marginTop: '8px' }}>
-                  <AlertCircle size={14} />
-                  <span>{errors.terms}</span>
-                </div>
-              )}
+        <div 
+          className="auth-page-content" 
+          style={{ 
+            position: 'relative', 
+            zIndex: 10, 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            minHeight: '100vh',
+            padding: '20px'
+          }}
+        >
+          <div className="auth-card effect-float" style={{ maxWidth: '520px' }}>
+            <div className="auth-header">
+              <h1 className="auth-title">Create Account</h1>
+              <p className="auth-subtitle">Join Sailent Predictor Pro today</p>
             </div>
 
-            <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine">
-              Create Account
-            </Button>
+            <form onSubmit={handleSubmit}>
+              <Input
+                label="Full Name"
+                type="text"
+                placeholder="John Doe"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                icon={UserIcon}
+                error={errors.fullName}
+                required
+              />
 
-            {errors.submit && (
-              <div className="error-message" style={{ marginTop: '16px', justifyContent: 'center' }}>
-                <AlertCircle size={14} />
-                <span>{errors.submit}</span>
+              <Input
+                label="Email Address"
+                type="email"
+                placeholder="username@gmail.com"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                icon={EmailIcon}
+                error={errors.email}
+                required
+              />
+
+              <Input
+                label="Password"
+                type="password"
+                placeholder="Create password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                icon={LockIcon}
+                error={errors.password}
+                required
+              />
+
+              {formData.password && (
+                <div style={{ marginBottom: '20px' }}>
+                  <div className="password-strength">
+                    <div 
+                      className="password-strength-bar"
+                      style={{ 
+                        width: `${(passwordStrength / 5) * 100}%`,
+                        background: strengthColors[passwordStrength]
+                      }}
+                    />
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    marginTop: '6px',
+                    fontSize: '0.75rem',
+                    color: 'var(--text-tertiary)'
+                  }}>
+                    <span>Password strength</span>
+                    <span style={{ color: strengthColors[passwordStrength], fontWeight: '600' }}>
+                      {strengthLabels[passwordStrength]}
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <Input
+                label="Confirm Password"
+                type="password"
+                placeholder="Confirm password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                icon={LockIcon}
+                error={errors.confirmPassword}
+                required
+              />
+
+              <div style={{ marginBottom: '24px' }}>
+                <label className="checkbox-wrapper">
+                  <input 
+                    type="checkbox" 
+                    checked={acceptTerms}
+                    onChange={(e) => {
+                      setAcceptTerms(e.target.checked);
+                      if (errors.terms) setErrors(prev => ({ ...prev, terms: '' }));
+                    }}
+                  />
+                  <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+                    I accept the <Link href="/terms" style={{ color: 'var(--accent)', fontWeight: '600' }}>Terms</Link> and <Link href="/privacy" style={{ color: 'var(--accent)', fontWeight: '600' }}>Privacy Policy</Link>
+                  </span>
+                </label>
+                {errors.terms && (
+                  <div className="error-message" style={{ marginTop: '8px' }}>
+                    <AlertCircle size={14} />
+                    <span>{errors.terms}</span>
+                  </div>
+                )}
               </div>
-            )}
-          </form>
 
-          <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-            Already have an account?{' '}
-            <Link href="/login" style={{ color: 'var(--accent)', fontWeight: '600' }} className="effect-rainbow-text">
-              Sign In
-            </Link>
+              <Button type="submit" fullWidth loading={loading} size="lg" className="btn-shine">
+                Create Account
+              </Button>
+
+              {errors.submit && (
+                <div className="error-message" style={{ marginTop: '16px', justifyContent: 'center' }}>
+                  <AlertCircle size={14} />
+                  <span>{errors.submit}</span>
+                </div>
+              )}
+            </form>
+
+            <div style={{ marginTop: '24px', textAlign: 'center', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+              Already have an account?{' '}
+              <Link href="/login" style={{ color: 'var(--accent)', fontWeight: '600' }} className="effect-rainbow-text">
+                Sign In
+              </Link>
+            </div>
           </div>
         </div>
       </div>
