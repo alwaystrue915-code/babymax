@@ -49,6 +49,10 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    utrLastSubmitAt: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: true,
