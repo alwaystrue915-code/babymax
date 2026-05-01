@@ -16,7 +16,7 @@ export default function HistoryPage() {
   const [userStatus, setUserStatus] = useState(null);
   const [copied, setCopied] = useState(false);
   const [settings, setSettings] = useState({
-    appName: "Sailent Predictor",
+    appName: "Wingo Tool",
     appLogoUrl: "https://cdn.nexapk.in/image17.webp",
     appVersion: "v1.0.2",
     appDownloadLink: "#",
@@ -253,12 +253,12 @@ export default function HistoryPage() {
                     position: "relative", zIndex: 1,
                     background: `linear-gradient(135deg, ${getStatusColor(userStatus.paymentStatus)} 0%, #059669 100%)`,
                     color: "white", padding: "10px", borderRadius: "12px",
-                    fontWeight: "700", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px",
+                    fontWeight: "800", fontSize: "0.85rem", display: "flex", alignItems: "center", gap: "6px",
                     boxShadow: `0 6px 16px ${getStatusColor(userStatus.paymentStatus)}35`,
                     justifyContent: "center", textDecoration: 'none'
                   }}
                 >
-                  <Download size={16} /> Download Application
+                  <Download size={18} /> Download
                 </a>
               )}
             </motion.div>
@@ -276,6 +276,12 @@ export default function HistoryPage() {
         
         <FloatingTelegram />
       </div>
+
+      <style jsx>{`
+        .btn-shine { position: relative; overflow: hidden; }
+        .btn-shine::after { content: ""; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.4) 50%, rgba(255,255,255,0) 100%); transform: skewX(-20deg); transition: all 0.7s ease; }
+        .btn-shine:hover::after { left: 200%; }
+      `}</style>
     </div>
   );
 }

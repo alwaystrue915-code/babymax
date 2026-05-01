@@ -124,7 +124,7 @@ export default function PaymentStatusMonitor() {
               <CheckCircle2 size={40} />
             </div>
             <h2 style={titleStyle}>Payment Approved!</h2>
-            <p style={subtitleStyle}>Congratulations! Your payment has been verified. You now have full access to Sailent Predictor Pro.</p>
+            <p style={subtitleStyle}>Congratulations! Your payment has been verified. You now have full access to Wingo Tool.</p>
             
             <div style={infoBoxStyle}>
               <div style={infoItemStyle}>

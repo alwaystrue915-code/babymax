@@ -150,7 +150,7 @@ export default function MobileOnlyGuard({ children }) {
           <h1>Desktop Blocked</h1>
           
           <p>
-            Sailent Predictor Pro is an exclusive mobile-first platform. 
+            Wingo Tool is an exclusive mobile-first platform. 
             To ensure the best experience and maintain security, desktop access is currently disabled.
           </p>
 

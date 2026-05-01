@@ -35,7 +35,7 @@ export default function RegisterPage() {
   const [acceptTerms, setAcceptTerms] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [settings, setSettings] = useState({ 
-    appName: "Sailent Predictor", 
+    appName: "Wingo Tool", 
     appLogoUrl: "https://cdn.nexapk.in/image34.webp",
     instagramLink: "",
     telegramLink: ""
@@ -198,7 +198,7 @@ export default function RegisterPage() {
           <div className="auth-card effect-float animate-scale-in" style={{ maxWidth: '520px' }}>
             <div className="auth-header animate-slide-up">
               <h1 className="auth-title">Create Account</h1>
-              <p className="auth-subtitle">Join Sailent Predictor Pro today</p>
+              <p className="auth-subtitle">Join Wingo Tool today</p>
             </div>
 
             <form onSubmit={handleSubmit}>

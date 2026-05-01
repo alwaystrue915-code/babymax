@@ -7,6 +7,13 @@ const nextConfig = {
   // Optimize images
   images: {
     formats: ['image/webp', 'image/avif'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.nexapk.in',
+        pathname: '/**',
+      },
+    ],
   },
   // Turbopack configuration (Next.js 16+)
   turbopack: {},

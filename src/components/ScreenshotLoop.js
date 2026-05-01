@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
+import Image from 'next/image';
 
 export default function ScreenshotLoop({ screenshots = [] }) {
   const [isPaused, setIsPaused] = useState(false);
@@ -20,6 +21,7 @@ export default function ScreenshotLoop({ screenshots = [] }) {
       setOffset((prevOffset) => {
         const containerWidth = containerRef.current?.offsetWidth || 0;
         const totalWidth = containerWidth / 2;
+        if (totalWidth === 0) return 0;
         const newOffset = (prevOffset + speed * (delta / 16)) % totalWidth;
         return newOffset;
       });
@@ -50,7 +52,7 @@ export default function ScreenshotLoop({ screenshots = [] }) {
         overflow: 'hidden',
         background: 'transparent',
         padding: '20px 0',
-        minHeight: '240px', // Reserve space for 200px image + 40px padding
+        minHeight: '240px',
         display: 'flex',
         alignItems: 'center'
       }}
@@ -63,7 +65,7 @@ export default function ScreenshotLoop({ screenshots = [] }) {
           left: 0,
           width: '150px',
           height: '100%',
-          background: 'linear-gradient(to right, var(--bg-primary) 0%, transparent 100%)',
+          background: 'linear-gradient(to right, #f8faff 0%, transparent 100%)',
           zIndex: 10,
           pointerEvents: 'none'
         }}
@@ -77,7 +79,7 @@ export default function ScreenshotLoop({ screenshots = [] }) {
           right: 0,
           width: '150px',
           height: '100%',
-          background: 'linear-gradient(to left, var(--bg-primary) 0%, transparent 100%)',
+          background: 'linear-gradient(to left, #f8faff 0%, transparent 100%)',
           zIndex: 10,
           pointerEvents: 'none'
         }}
@@ -103,35 +105,35 @@ export default function ScreenshotLoop({ screenshots = [] }) {
             key={`${screenshot.src}-${index}`}
             style={{
               flexShrink: 0,
-              transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-              borderRadius: '16px',
+              transition: 'transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease',
+              borderRadius: '20px',
               overflow: 'hidden',
-              boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)',
-              border: '1px solid var(--border)'
+              boxShadow: '0 10px 30px rgba(0, 0, 0, 0.08)',
+              border: '1px solid rgba(0,0,0,0.05)',
+              background: '#f1f5f9',
+              position: 'relative',
+              width: '120px',
+              height: '240px'
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(0, 0, 0, 0.08)';
+              e.currentTarget.style.transform = 'scale(1.08) translateY(-5px)';
+              e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 0, 0, 0.15)';
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)';
+              e.currentTarget.style.transform = 'scale(1) translateY(0)';
+              e.currentTarget.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.08)';
             }}
           >
-            <img
+            <Image
               src={screenshot.src}
               alt={screenshot.alt || `Screenshot ${index + 1}`}
-              loading="lazy"
+              fill
               style={{
-                display: 'block',
-                height: '200px',
-                width: 'auto',
                 objectFit: 'cover',
-                borderRadius: '16px'
+                transition: 'opacity 0.5s ease'
               }}
-              onError={(e) => {
-                e.target.style.display = 'none';
-              }}
+              sizes="120px"
+              loading="lazy"
             />
           </div>
         ))}

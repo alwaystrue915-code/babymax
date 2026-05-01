@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
-const SettingsSchema = new mongoose.Schema(
-  {
+const settingsSchema = new mongoose.Schema({
     instagramLink: {
       type: String,
       default: '',
@@ -12,7 +11,7 @@ const SettingsSchema = new mongoose.Schema(
     },
     appName: {
       type: String,
-      default: 'Sailent Predictor',
+      default: 'Wingo Tool',
     },
     appDownloadLink: {
       type: String,
@@ -20,7 +19,7 @@ const SettingsSchema = new mongoose.Schema(
     },
     appLogoUrl: {
       type: String,
-      default: 'https://cdn.nexapk.in/image17.webp',
+      default: 'https://cdn.nexapk.in/image34.webp',
     },
     appVersion: {
       type: String,
@@ -36,7 +35,7 @@ const SettingsSchema = new mongoose.Schema(
     },
     upiName: {
       type: String,
-      default: 'Sailent Predictor',
+      default: 'Wingo Tool',
     },
     upiAmount: {
       type: Number,
@@ -44,27 +43,15 @@ const SettingsSchema = new mongoose.Schema(
     },
     noticeText: {
       type: String,
-      default: 'Welcome to Sailent Predictor Pro! Enjoy the best accuracy.',
+      default: 'Welcome to Wingo Tool! Enjoy the best accuracy.',
     },
     showNotice: {
       type: Boolean,
       default: true,
     },
-    apiSecretKey: {
-      type: String,
-      default: 'sailent_secure_v1_key',
-    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-// Force clear model from cache in development to ensure schema updates are applied
-if (mongoose.models.Settings) {
-  delete mongoose.models.Settings;
-}
-
-const Settings = mongoose.model('Settings', SettingsSchema);
-
+const Settings = mongoose.models.Settings || mongoose.model('Settings', settingsSchema);
 export default Settings;

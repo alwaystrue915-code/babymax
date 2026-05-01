@@ -11,7 +11,7 @@ export default function FAQPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [openIndex, setOpenIndex] = useState(0);
   const [settings, setSettings] = useState({
-    appName: "Sailent Predictor",
+    appName: "Wingo Tool",
     instagramLink: "",
     telegramLink: "",
   });
@@ -40,8 +40,8 @@ export default function FAQPage() {
 
   const faqs = [
     {
-      question: "What is Sailent Predictor Pro?",
-      answer: "Sailent Predictor Pro is an advanced analytics platform that uses state-of-the-art algorithms to provide real-time predictions and data analysis for various systems. It helps users make informed decisions based on statistical modeling."
+      question: "What is Wingo Tool?",
+      answer: "Wingo Tool is an advanced analytics platform that uses state-of-the-art algorithms to provide real-time predictions and data analysis for various systems. It helps users make informed decisions based on statistical modeling."
     },
     {
       question: "How accurate are the predictions?",

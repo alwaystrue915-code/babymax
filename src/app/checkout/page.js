@@ -23,7 +23,13 @@ import {
   Rocket,
   ArrowRight,
   Activity,
-  Star
+  Star,
+  Download,
+  Maximize2,
+  BookOpen,
+  CheckSquare,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
@@ -37,12 +43,13 @@ export default function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [copiedUpi, setCopiedUpi] = useState(false);
+  const [showGuide, setShowGuide] = useState(false);
   const [settings, setSettings] = useState({
     instagramLink: "",
     telegramLink: "",
-    appName: "Sailent Predictor",
+    appName: "Wingo Tool",
     upiId: "sailent@upi",
-    upiName: "Sailent Predictor",
+    upiName: "Wingo Tool",
     upiAmount: 499,
     appLogoUrl: "https://cdn.nexapk.in/image17.webp",
     appVersion: "v1.0.2",
@@ -50,7 +57,6 @@ export default function CheckoutPage() {
   });
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [showFullQR, setShowFullQR] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth <= 1024);
@@ -143,6 +149,23 @@ export default function CheckoutPage() {
     setIsSubmitting(false);
   };
 
+  const handleDownloadQR = async () => {
+    const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(`upi://pay?pa=${settings.upiId}&pn=${settings.upiName}&am=${settings.upiAmount}&cu=INR`)}`;
+    try {
+      const response = await fetch(qrUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `sailent-qr-${settings.upiAmount}.png`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      window.open(qrUrl, '_blank');
+    }
+  };
+
   if (!isAuthenticated)
     return <div style={{ minHeight: "100vh", background: "#f8faff" }} />;
 
@@ -158,8 +181,19 @@ export default function CheckoutPage() {
     );
   }
 
-  const SectionHeader = ({ icon: Icon, iconColor, title, subtitle, badge, badgeColor, badgeIcon: BadgeIcon }) => (
-    <div style={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", padding: "0px 4px", marginBottom: "14px" }}>
+  const SectionHeader = ({ icon: Icon, iconColor, title, subtitle, badge, badgeColor, badgeIcon: BadgeIcon, onClick, showExpand }) => (
+    <div 
+      onClick={onClick}
+      style={{ 
+        display: "flex", 
+        flexDirection: "row", 
+        alignItems: "center", 
+        justifyContent: "space-between", 
+        padding: "0px 4px", 
+        marginBottom: "14px",
+        cursor: onClick ? "pointer" : "default"
+      }}
+    >
       <div>
         <div style={{ fontSize: "18px", display: "flex", alignItems: "center", gap: "8px", fontWeight: 700, color: "#1e293b" }}>
           <Icon style={{ color: iconColor, width: "20px", height: "20px", flexShrink: 0 }} />
@@ -186,6 +220,7 @@ export default function CheckoutPage() {
         }}>
           {BadgeIcon && <BadgeIcon size={12} />}
           {badge}
+          {showExpand && (showGuide ? <ChevronUp size={12} style={{ marginLeft: "2px" }} /> : <ChevronDown size={12} style={{ marginLeft: "2px" }} />)}
         </div>
       )}
     </div>
@@ -221,88 +256,152 @@ export default function CheckoutPage() {
             ) : (
               <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
                 
-                {/* Section 1: Official App */}
+                {/* Section 1: Secure Checkout */}
                 <div>
                   <SectionHeader 
-                    icon={Rocket} 
-                    iconColor="#f59e0b" 
-                    title="Official App" 
-                    badge="Official" 
-                    badgeColor="#10b981"
+                    icon={Lock} 
+                    iconColor="#8b5cf6" 
+                    title="Secure Checkout" 
+                    subtitle="Finalize your activation for full access"
+                    badge="Secure" 
+                    badgeColor="#8b5cf6"
                     badgeIcon={ShieldCheck}
                   />
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ background: "linear-gradient(135deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.06) 100%)", borderRadius: "32px", padding: "24px", border: "1.5px solid rgba(245, 158, 11, 0.25)", position: "relative", overflow: "hidden" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "20px" }}>
-                        <div style={{ width: "64px", height: "64px", borderRadius: "20px", background: "white", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", border: "1.5px solid white", boxShadow: "0 8px 16px rgba(245, 158, 11, 0.2)" }}>
-                          <img src={settings.appLogoUrl} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} style={{ background: "linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(139, 92, 246, 0.06) 100%)", borderRadius: "32px", padding: "20px 24px", border: "1.5px solid rgba(139, 92, 246, 0.25)", position: "relative", overflow: "hidden" }}>
+                    
+                    <div style={{ position: "absolute", top: "-10px", right: "-10px", width: "110px", height: "110px", background: "rgba(139, 92, 246, 0.45)", borderRadius: "40% 60% 70% 30%", filter: "blur(10px)", pointerEvents: "none" }}></div>
+
+                    <div style={{ position: "relative", zIndex: 1, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                      <div style={{ textAlign: "left" }}>
+                        <div style={{ fontSize: "11px", color: "#6d28d9", fontWeight: "800", textTransform: "uppercase", letterSpacing: "0.05em" }}>Total Amount to Pay</div>
+                        <div style={{ fontSize: "38px", fontWeight: "900", color: "#1e293b", display: "flex", alignItems: "baseline", gap: "4px" }}>
+                          <span style={{ fontSize: "22px", color: "#7c3aed" }}>₹</span>{settings.upiAmount}
                         </div>
-                        <div>
-                          <h3 style={{ fontSize: "1.3rem", fontWeight: "800", color: "#1e293b" }}>{settings.appName}</h3>
-                          <div style={{ fontSize: "0.85rem", color: "#d97706", fontWeight: "700" }}>v{settings.appVersion} • Lifetime Access</div>
-                        </div>
-                    </div>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", background: "white", padding: "16px", borderRadius: "20px", border: "1px solid rgba(245,158,11,0.1)" }}>
-                        <div>
-                          <div style={{ fontSize: "10px", color: "#94a3b8", fontWeight: "700", textTransform: "uppercase" }}>Activation Fee</div>
-                          <div style={{ fontSize: "24px", fontWeight: "900", color: "#1e293b" }}>₹{settings.upiAmount}.00</div>
-                        </div>
-                        <div style={{ background: "#fef3c7", color: "#d97706", padding: "8px 12px", borderRadius: "12px", fontSize: "11px", fontWeight: "800", display: "flex", alignItems: "center", gap: "4px" }}>
-                          <ShieldCheck size={14} /> 100% Safe
-                        </div>
+                      </div>
+                      <div style={{ background: "white", padding: "12px", borderRadius: "16px", color: "#7c3aed", boxShadow: "0 8px 16px rgba(124, 58, 237, 0.15)" }}>
+                        <CreditCard size={32} />
+                      </div>
                     </div>
                   </motion.div>
                 </div>
 
-                {/* Section 2: QR Code */}
-                <div style={{ background: "white", padding: "24px", borderRadius: "32px", border: "1px solid var(--border)", boxShadow: "0 10px 30px rgba(0,0,0,0.03)", position: "relative" }}>
+                {/* Section: Payment Guide (Collapsible) */}
+                <div>
+                  <SectionHeader 
+                    icon={BookOpen} 
+                    iconColor="#3b82f6" 
+                    title="Payment Guide" 
+                    subtitle="Follow these simple steps to activate"
+                    badge="Tutorial" 
+                    badgeColor="#3b82f6"
+                    badgeIcon={Rocket}
+                    onClick={() => setShowGuide(!showGuide)}
+                    showExpand={true}
+                  />
+                  <AnimatePresence>
+                    {showGuide && (
+                      <motion.div 
+                        initial={{ height: 0, opacity: 0 }} 
+                        animate={{ height: "auto", opacity: 1 }} 
+                        exit={{ height: 0, opacity: 0 }}
+                        style={{ overflow: "hidden" }}
+                      >
+                        <div style={{ background: "white", padding: "20px", borderRadius: "28px", border: "1px solid var(--border)", boxShadow: "0 4px 12px rgba(0,0,0,0.02)" }}>
+                          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            {[
+                              { step: "1", text: "Pay using the QR code or Quick Pay apps below.", icon: QrCode, color: "#3b82f6" },
+                              { step: "2", text: "Copy the 12-digit UTR/Ref number from your payment app.", icon: Copy, color: "#8b5cf6" },
+                              { step: "3", text: "Submit the UTR number in the verification box below.", icon: CheckSquare, color: "#10b981" }
+                            ].map((s, i) => (
+                              <div key={i} style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                                <div style={{ width: "28px", height: "28px", borderRadius: "8px", background: `${s.color}15`, color: s.color, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "12px", fontWeight: "800", flexShrink: 0 }}>{s.step}</div>
+                                <div style={{ fontSize: "13px", fontWeight: "600", color: "#475569" }}>{s.text}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Section 2: Scan to Pay */}
+                <div style={{ background: "linear-gradient(135deg, #fffdf5 0%, #fffbeb 100%)", padding: "24px", borderRadius: "32px", border: "1.5px solid #fef3c7", boxShadow: "0 10px 30px rgba(251, 191, 36, 0.05)", position: "relative", overflow: "hidden" }}>
+                   <div style={{ position: "absolute", top: "-20px", right: "-20px", width: "100px", height: "100px", background: "rgba(251, 191, 36, 0.15)", borderRadius: "40% 60% 70% 30%", filter: "blur(15px)", pointerEvents: "none" }}></div>
+                   <div style={{ position: "absolute", bottom: "-30px", left: "-20px", width: "120px", height: "120px", background: "rgba(251, 191, 36, 0.08)", borderRadius: "60% 40% 30% 70%", filter: "blur(20px)", pointerEvents: "none" }}></div>
+
                    <SectionHeader 
                       icon={QrCode} 
-                      iconColor="#1e293b" 
+                      iconColor="#b45309" 
                       title="Scan to Pay" 
-                      badge="Live" 
-                      badgeColor="#3b82f6"
-                      badgeIcon={Activity}
+                      subtitle="Scan this QR with any UPI app to pay"
+                      badge="Golden Pay" 
+                      badgeColor="#b45309"
+                      badgeIcon={Star}
                    />
                    
-                   <div style={{ textAlign: "center", marginTop: "10px" }}>
-                      <div onClick={() => setShowFullQR(true)} style={{ background: "white", padding: "16px", borderRadius: "28px", border: "2px solid #f1f5f9", display: "inline-block", cursor: "zoom-in", position: "relative" }}>
+                   <div style={{ textAlign: "center", marginTop: "10px", position: "relative", zIndex: 1 }}>
+                      <div onClick={handleDownloadQR} style={{ background: "white", padding: "16px", borderRadius: "28px", border: "2px solid #fef3c7", display: "inline-block", cursor: "pointer", position: "relative", boxShadow: "0 8px 25px rgba(251, 191, 36, 0.1)" }}>
                          <img src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(`upi://pay?pa=${settings.upiId}&pn=${settings.upiName}&am=${settings.upiAmount}&cu=INR`)}`} alt="QR" style={{ width: "180px", height: "180px" }} />
-                         <div style={{ position: "absolute", bottom: "12px", right: "12px", background: "white", padding: "6px", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", color: "#6366f1" }}><Search size={16} /></div>
+                         <div style={{ position: "absolute", bottom: "12px", right: "12px", background: "white", padding: "6px", borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)", color: "#b45309" }}><Download size={16} /></div>
                       </div>
                       
-                      <div style={{ marginTop: "20px", display: "flex", alignItems: "center", justifyContent: "center", gap: "10px" }}>
-                        <div style={{ fontSize: "15px", fontWeight: "800", color: "#1e293b" }}>{settings.upiId}</div>
-                        <button 
-                          onClick={() => { navigator.clipboard.writeText(settings.upiId); setCopiedUpi(true); setTimeout(() => setCopiedUpi(false), 2000); }} 
-                          style={{ background: "#f1f5f9", border: "none", color: copiedUpi ? "#10b981" : "#6366f1", cursor: "pointer", width: "32px", height: "32px", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}
-                        >
-                          {copiedUpi ? <CheckCircle2 size={18} /> : <Copy size={18} />}
-                        </button>
+                      <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", alignItems: "center", gap: "8px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "white", padding: "8px 16px", borderRadius: "14px", border: "1px solid #fef3c7" }}>
+                          <QrCode size={18} color="#b45309" />
+                          <div style={{ fontSize: "14px", fontWeight: "800", color: "#1e293b" }}>{settings.upiId}</div>
+                          <button 
+                            onClick={() => { navigator.clipboard.writeText(settings.upiId); setCopiedUpi(true); setTimeout(() => setCopiedUpi(false), 2000); }} 
+                            style={{ background: "#fffbeb", border: "none", color: copiedUpi ? "#10b981" : "#b45309", cursor: "pointer", width: "28px", height: "28px", borderRadius: "8px", display: "flex", alignItems: "center", justifyContent: "center" }}
+                          >
+                            {copiedUpi ? <CheckCircle2 size={16} /> : <Copy size={16} />}
+                          </button>
+                        </div>
+                        <div style={{ fontSize: "11px", color: "#b45309", fontWeight: "700", display: "flex", alignItems: "center", gap: "4px" }}>
+                          <Info size={12} /> Tap QR to download
+                        </div>
                       </div>
-                      {copiedUpi && <div style={{ fontSize: "11px", color: "#10b981", fontWeight: "700", marginTop: "6px" }}>Copied!</div>}
                    </div>
                 </div>
 
-                {/* Section 3: UTR Submission */}
-                <div style={{ background: "white", padding: "24px", borderRadius: "32px", border: "1px solid var(--border)", boxShadow: "0 10px 40px rgba(0,0,0,0.05)" }}>
+                {/* Section: Verification Header */}
+                <div>
+                  <SectionHeader 
+                    icon={Shield} 
+                    iconColor="#10b981" 
+                    title="Verification" 
+                    subtitle="Final step to activate your account"
+                    badge="Secured" 
+                    badgeColor="#10b981"
+                    badgeIcon={ShieldCheck}
+                  />
+                </div>
+
+                {/* Section 3: Verification Form */}
+                <div style={{ background: "linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%)", padding: "24px", borderRadius: "32px", border: "1.5px solid rgba(16, 185, 129, 0.2)", boxShadow: "0 10px 40px rgba(16, 185, 129, 0.08)", position: "relative", overflow: "hidden" }}>
+                   <div style={{ position: "absolute", top: "-10px", right: "-10px", width: "100px", height: "100px", background: "rgba(16, 185, 129, 0.25)", borderRadius: "40% 60% 70% 30%", filter: "blur(12px)", pointerEvents: "none" }}></div>
+                   <div style={{ position: "absolute", bottom: "-20px", left: "-15px", width: "120px", height: "120px", background: "rgba(16, 185, 129, 0.15)", borderRadius: "60% 40% 30% 70%", filter: "blur(18px)", pointerEvents: "none" }}></div>
+
                    <SectionHeader 
                       icon={CreditCard} 
                       iconColor="#10b981" 
-                      title="Verification" 
-                      subtitle="Enter your UTR/Ref number" 
-                      badge="Secured" 
+                      title="UTR Submission" 
+                      subtitle="Enter your 12-digit UTR/Ref number"
+                      badge="Verify Now" 
                       badgeColor="#10b981"
                       badgeIcon={Lock}
                    />
-                   <div style={{ position: "relative", marginBottom: "16px" }}>
-                      <div style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }}><Info size={20} /></div>
-                      <input type="text" placeholder="Enter 12-digit UTR Number" value={utr} onChange={(e) => setUtr(e.target.value.replace(/[^0-9]/g, '').slice(0, 12))} style={{ width: "100%", padding: "18px 18px 18px 50px", borderRadius: "20px", border: "2px solid #f1f5f9", fontSize: "16px", fontWeight: "700", background: "#f8fafc", color: "#1e293b" }} />
+                   <div style={{ position: "relative", marginBottom: "16px", zIndex: 1 }}>
+                      <div style={{ position: "absolute", left: "16px", top: "50%", transform: "translateY(-50%)", color: "#10b981" }}><Info size={20} /></div>
+                      <input type="text" placeholder="Enter 12-digit UTR Number" value={utr} onChange={(e) => setUtr(e.target.value.replace(/[^0-9]/g, '').slice(0, 12))} style={{ width: "100%", padding: "18px 18px 18px 50px", borderRadius: "20px", border: "2px solid #d1fae5", fontSize: "16px", fontWeight: "700", background: "white", color: "#1e293b" }} />
                    </div>
                    <button 
                      onClick={handleSubmitUTR} 
                      disabled={isSubmitting || utr.length < 12} 
                      className="btn-shine" 
                      style={{ 
+                       position: "relative",
+                       zIndex: 1,
                        width: "100%", 
                        padding: "18px", 
                        borderRadius: "20px", 
@@ -326,7 +425,7 @@ export default function CheckoutPage() {
                      {isSubmitting ? "Processing..." : (
                        <>
                          {utr.length === 12 && <CheckCircle2 size={20} />}
-                         {utr.length === 12 ? "Submit Transaction" : "Enter 12 Digits to Submit"}
+                         {utr.length === 12 ? "Submit" : "Enter 12 Digits to Submit"}
                        </>
                      )}
                    </button>
@@ -338,7 +437,7 @@ export default function CheckoutPage() {
                     icon={Zap} 
                     iconColor="#f59e0b" 
                     title="Quick Pay" 
-                    subtitle="Direct App Payment" 
+                    subtitle="Directly open your favorite UPI app"
                     badge="Express" 
                     badgeColor="#f59e0b"
                     badgeIcon={Zap}
@@ -361,6 +460,7 @@ export default function CheckoutPage() {
                     icon={ShieldCheck} 
                     iconColor="#6366f1" 
                     title="Why Choose Us?" 
+                    subtitle="Premium benefits for our valued users"
                     badge="Premium" 
                     badgeColor="#6366f1"
                     badgeIcon={Star}
@@ -390,20 +490,26 @@ export default function CheckoutPage() {
                         key={i} 
                         whileHover={{ x: 5 }}
                         style={{ 
-                          background: "white", 
+                          background: `linear-gradient(135deg, ${benefit.color}10 0%, ${benefit.color}05 100%)`, 
                           padding: "16px", 
                           borderRadius: "24px", 
-                          border: "1px solid var(--border)", 
+                          border: `1.5px solid ${benefit.color}25`, 
                           display: "flex", 
                           alignItems: "center", 
                           gap: "16px",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.02)"
+                          boxShadow: `0 4px 12px ${benefit.color}05`,
+                          position: "relative",
+                          overflow: "hidden"
                         }}
                        >
-                          <div style={{ width: "48px", height: "48px", borderRadius: "14px", background: `${benefit.color}15`, color: benefit.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                          {/* Decorative Blobs - Color matched */}
+                          <div style={{ position: "absolute", top: "-15px", right: "-15px", width: "70px", height: "70px", background: `${benefit.color}20`, borderRadius: "40% 60% 70% 30%", filter: "blur(10px)", pointerEvents: "none" }}></div>
+                          <div style={{ position: "absolute", bottom: "-20px", left: "-10px", width: "80px", height: "80px", background: `${benefit.color}10`, borderRadius: "60% 40% 30% 70%", filter: "blur(15px)", pointerEvents: "none" }}></div>
+
+                          <div style={{ position: "relative", zIndex: 1, width: "48px", height: "48px", borderRadius: "14px", background: `${benefit.color}15`, color: benefit.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                             <benefit.icon size={24} />
                           </div>
-                          <div>
+                          <div style={{ position: "relative", zIndex: 1 }}>
                             <div style={{ fontSize: "14px", fontWeight: "800", color: "#1e293b" }}>{benefit.title}</div>
                             <div style={{ fontSize: "11px", color: "#64748b", fontWeight: "500", marginTop: "2px" }}>{benefit.desc}</div>
                           </div>
@@ -424,23 +530,6 @@ export default function CheckoutPage() {
         </main>
         <FloatingTelegram />
       </div>
-
-      <AnimatePresence>
-        {showFullQR && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setShowFullQR(false)} style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.95)", zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(15px)", padding: "20px" }}>
-            <motion.div initial={{ scale: 0.8, y: 30 }} animate={{ scale: 1, y: 0 }} onClick={e => e.stopPropagation()} style={{ background: "white", padding: "24px", borderRadius: "36px", textAlign: "center", maxWidth: "360px", width: "100%", boxShadow: "0 30px 60px rgba(0,0,0,0.3)" }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-                <span style={{ fontWeight: "800", color: "#1e293b", fontSize: "1.1rem" }}>Scan to Pay</span>
-                <button onClick={() => setShowFullQR(false)} style={{ background: "#f1f5f9", border: "none", borderRadius: "50%", width: "32px", height: "32px", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "#64748b" }}><X size={20} /></button>
-              </div>
-              <div style={{ background: "white", padding: "12px", borderRadius: "24px", border: "2px solid #f8fafc", marginBottom: "24px" }}>
-                <img src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(`upi://pay?pa=${settings.upiId}&pn=${settings.upiName}&am=${settings.upiAmount}&cu=INR`)}`} alt="Full QR" style={{ width: "100%", borderRadius: "16px", display: "block" }} />
-              </div>
-              <button onClick={() => setShowFullQR(false)} style={{ width: "100%", padding: "18px", background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)", color: "white", borderRadius: "18px", border: "none", fontWeight: "800", fontSize: "16px", cursor: "pointer" }}>Close Scanner</button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <style jsx>{`
         .btn-shine { position: relative; overflow: hidden; }

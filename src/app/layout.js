@@ -31,7 +31,7 @@ export default function RootLayout({ children }) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
-    "name": "Sailent Predictor Pro",
+    "name": "Wingo Tool",
     "operatingSystem": "Web, Android",
     "applicationCategory": "UtilitiesApplication",
     "offers": {

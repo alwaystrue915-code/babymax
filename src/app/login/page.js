@@ -29,7 +29,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [settings, setSettings] = useState({ 
-    appName: "Sailent Predictor", 
+    appName: "Wingo Tool", 
     appLogoUrl: "https://cdn.nexapk.in/image34.webp",
     instagramLink: "",
     telegramLink: ""
@@ -162,7 +162,7 @@ export default function LoginPage() {
           <div className="auth-card effect-float animate-scale-in">
             <div className="auth-header animate-slide-up">
               <h1 className="auth-title">Welcome Back</h1>
-              <p className="auth-subtitle">Sign in to your account to continue</p>
+              <p className="auth-subtitle">Join Wingo Tool today</p>
             </div>
 
             <form onSubmit={handleSubmit}>

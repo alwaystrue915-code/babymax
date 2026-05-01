@@ -3,11 +3,11 @@
 import { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import DashboardNavbar from "@/components/DashboardNavbar";
-import { Shield, Clock, FileText, ChevronLeft } from "lucide-react";
+import { RefreshCcw, ChevronLeft, AlertCircle, Info, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
-export default function PrivacyPage() {
+export default function RefundPage() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [settings, setSettings] = useState({
     appName: "Wingo Tool",
@@ -39,41 +39,30 @@ export default function PrivacyPage() {
 
   const sections = [
     {
-      title: "1. Introduction",
-      content: "Wingo Tool (\"we\", \"our\", or \"us\") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Service."
+      title: "1. Refund Eligibility",
+      content: "At Wingo Tool, we strive to provide a high-quality predictive tool. Refunds are only considered in cases of technical failure where the activation key fails to unlock the premium features despite successful payment verification."
     },
     {
-      title: "2. Information We Collect",
+      title: "2. No-Refund Policy",
       content: (
         <>
-          <p style={{ marginBottom: "12px" }}>We may collect personal information that you provide directly to us, including:</p>
+          <p style={{ marginBottom: "12px" }}>Refunds will NOT be issued in the following scenarios:</p>
           <ul style={{ paddingLeft: "20px", lineHeight: "1.8" }}>
-            <li>Name and email address when you create an account</li>
-            <li>Profile information you choose to provide</li>
-            <li>Communication data when you contact us</li>
-            <li>Payment information (processed securely by third-party processors)</li>
+            <li>Predictions did not match actual outcomes (predictions are statistical, not guaranteed).</li>
+            <li>User changed their mind after a successful activation.</li>
+            <li>Account suspension due to violation of our Terms of Service.</li>
+            <li>Failure to provide a valid UTR/Transaction screenshot for verification.</li>
           </ul>
         </>
       )
     },
     {
-      title: "3. Data Security",
-      content: "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction. However, no method of transmission over the Internet is 100% secure."
+      title: "3. Refund Process",
+      content: "If you believe you are eligible for a refund due to a technical error, please contact our support team on Telegram within 24 hours of payment. Provide your email, payment screenshot, and UTR number for investigation."
     },
     {
-      title: "4. Your Rights",
-      content: (
-        <>
-          <p style={{ marginBottom: "12px" }}>Depending on your location, you may have the following rights:</p>
-          <ul style={{ paddingLeft: "20px", lineHeight: "1.8" }}>
-            <li>Access your personal information</li>
-            <li>Correct inaccurate or incomplete information</li>
-            <li>Delete your personal information</li>
-            <li>Withdraw consent at any time</li>
-          </ul>
-          <p style={{ marginTop: "12px" }}>To exercise these rights, please contact us at support@sailentpredictor.com</p>
-        </>
-      )
+      title: "4. Processing Time",
+      content: "Approved refunds are processed within 5-7 business days and will be credited back to the original payment source (UPI account) used during the transaction."
     }
   ];
 
@@ -90,10 +79,10 @@ export default function PrivacyPage() {
 
           <div style={{ padding: "0 4px", marginBottom: "32px" }}>
             <div style={{ fontSize: "24px", display: "flex", alignItems: "center", gap: "12px", fontWeight: "800", color: "#1e293b" }}>
-              <FileText style={{ color: "#8b5cf6", width: "26px", height: "26px" }} />
-              Privacy Policy
+              <RefreshCcw style={{ color: "#ef4444", width: "26px", height: "26px" }} />
+              Refund Policy
             </div>
-            <div style={{ fontSize: "14px", color: "#64748b", marginTop: "8px", fontWeight: "500" }}>How we protect your data and privacy</div>
+            <div style={{ fontSize: "14px", color: "#64748b", marginTop: "8px", fontWeight: "500" }}>Our commitment to fair transactions</div>
           </div>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "32px", padding: "0 4px" }}>
@@ -106,17 +95,24 @@ export default function PrivacyPage() {
                 transition={{ delay: index * 0.1 }}
               >
                 <h2 style={{ fontSize: "1.25rem", fontWeight: "800", marginBottom: "12px", color: "#1e293b", display: "flex", alignItems: "center", gap: "10px" }}>
-                  <div style={{ width: "4px", height: "20px", background: "#8b5cf6", borderRadius: "2px" }}></div>
+                  <div style={{ width: "4px", height: "20px", background: "#ef4444", borderRadius: "2px" }}></div>
                   {section.title}
                 </h2>
                 <div style={{ color: "#475569", lineHeight: "1.8", fontSize: "1rem", paddingLeft: "14px" }}>{section.content}</div>
               </motion.div>
             ))}
+
+            <div style={{ marginTop: "12px", padding: "20px", background: "rgba(239, 68, 68, 0.05)", borderRadius: "20px", border: "1px dashed rgba(239, 68, 68, 0.2)", display: "flex", alignItems: "flex-start", gap: "12px" }}>
+                <AlertCircle style={{ color: "#ef4444", flexShrink: 0 }} size={20} />
+                <div style={{ fontSize: "0.85rem", color: "#b91c1c", fontWeight: "500", lineHeight: "1.5" }}>
+                  Please ensure you provide accurate UTR details during checkout to avoid activation delays. We are not responsible for payments made to unauthorized UPI IDs.
+                </div>
+            </div>
           </div>
 
           <div style={{ marginTop: "48px", padding: "24px", borderTop: "1px solid #e2e8f0", textAlign: "center" }}>
-            <p style={{ color: "#64748b", fontSize: "0.9rem" }}>If you have any questions about this policy, please reach out to us.</p>
-            <a href={settings.telegramLink} style={{ color: "#8b5cf6", fontWeight: "700", textDecoration: "none", marginTop: "8px", display: "inline-block" }}>Contact Support →</a>
+            <p style={{ color: "#64748b", fontSize: "0.9rem" }}>Have a refund request? Message us on Telegram.</p>
+            <a href={settings.telegramLink} style={{ color: "#ef4444", fontWeight: "700", textDecoration: "none", marginTop: "8px", display: "inline-block" }}>Contact Support →</a>
           </div>
         </main>
       </div>

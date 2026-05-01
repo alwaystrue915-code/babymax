@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, X, Home, Settings, BarChart3, LogOut, ChevronLeft, ChevronRight, Send, HelpCircle, FileText, Users, Clock, Shield } from 'lucide-react';
+import { Menu, X, Home, Settings, BarChart3, LogOut, ChevronLeft, ChevronRight, Send, HelpCircle, FileText, Users, Clock, Shield, RefreshCcw } from 'lucide-react';
 import CarvedBackground from './CarvedBackground';
 
 export default function Sidebar({ isOpen, onToggle, settings }) {
@@ -35,6 +35,7 @@ export default function Sidebar({ isOpen, onToggle, settings }) {
     { icon: HelpCircle, label: 'FAQ', active: pathname === '/faq', href: '/faq', color: '#f59e0b' },
     { icon: FileText, label: 'Privacy', active: pathname === '/privacy', href: '/privacy', color: '#8b5cf6' },
     { icon: Shield, label: 'Terms', active: pathname === '/terms', href: '/terms', color: '#10b981' },
+    { icon: RefreshCcw, label: 'Refund', active: pathname === '/refund', href: '/refund', color: '#ef4444' },
     { icon: Send, label: 'Telegram', active: false, href: settings?.telegramLink || '#', external: true, color: '#0088cc' },
     { 
       icon: (props) => (
