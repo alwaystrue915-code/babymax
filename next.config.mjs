@@ -50,10 +50,11 @@ const nextConfig = {
     return [
       {
         source: "/__/auth/:path*",
-        destination: "https://support-bot-7569b.firebaseapp.com/__/auth/:path*",
+        destination: "https://wingo-tool.firebaseapp.com/__/auth/:path*",
       },
     ];
   },
 };
 
 export default nextConfig;
+
