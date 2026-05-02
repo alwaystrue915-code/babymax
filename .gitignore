@@ -42,3 +42,6 @@ next-env.d.ts
 
 # mail folder
 mail/
+
+# Google OAuth credentials
+client_secret*.json
