@@ -7,8 +7,7 @@ import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Sidebar from "@/components/Sidebar";
 import dynamic from "next/dynamic";
-import { auth, googleProvider } from "@/lib/firebase";
-import { signInWithPopup } from "firebase/auth";
+
 
 // Performance Optimization: Lazy load heavy animation components with no SSR
 const GradientBackground = memo(
@@ -158,45 +157,8 @@ export default function LoginPage() {
     [email, password, rememberMe],
   );
 
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    setError("");
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      const loggedUser = result.user;
-
-      const response = await fetch("/api/auth/google-login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": "sailent_secure_v1_key",
-        },
-        body: JSON.stringify({
-          fullName: loggedUser.displayName,
-          email: loggedUser.email,
-          provider: "google",
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        localStorage.setItem("token", data.token);
-        window.location.href = "/dashboard";
-      } else {
-        setError(data.message || "Google login failed");
-      }
-    } catch (error) {
-      console.error("Google login error:", error);
-      if (error.code === "auth/popup-closed-by-user") {
-        setError("Login cancelled.");
-      } else {
-        setError("An error occurred with Google login.");
-      }
-    } finally {
-      setLoading(false);
-    }
+  const handleGoogleLogin = () => {
+    window.location.href = "/api/auth/google";
   };
 
   return (

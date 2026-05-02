@@ -46,14 +46,6 @@ const nextConfig = {
     };
     return config;
   },
-  async rewrites() {
-    return [
-      {
-        source: "/__/auth/:path*",
-        destination: "https://wingo-tool.firebaseapp.com/__/auth/:path*",
-      },
-    ];
-  },
 };
 
 export default nextConfig;
