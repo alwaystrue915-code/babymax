@@ -46,6 +46,14 @@ const nextConfig = {
     };
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: "/__/auth/:path*",
+        destination: "https://support-bot-7569b.firebaseapp.com/__/auth/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
