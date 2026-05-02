@@ -17,6 +17,9 @@ export const metadata = {
       { url: "/favicons/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
+  verification: {
+    google: "XUvqkgpjl1E-abnhE1Uqp-95qhyj10SjpU9VHzUCnM0",
+  },
 };
 
 export const viewport = {
