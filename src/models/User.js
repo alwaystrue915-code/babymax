@@ -20,9 +20,25 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, 'Password is required'],
+      required: function() {
+        return this.provider === 'credentials';
+      },
       minlength: [8, 'Password must be at least 8 characters'],
       select: false, // Don't return password by default
+    },
+    provider: {
+      type: String,
+      enum: ['credentials', 'google'],
+      default: 'credentials',
+    },
+    lastLogin: {
+      type: Date,
+      default: Date.now,
+    },
+    role: {
+      type: String,
+      enum: ['user', 'admin'],
+      default: 'user',
     },
     createdAt: {
       type: Date,
